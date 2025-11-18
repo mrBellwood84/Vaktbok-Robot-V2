@@ -11,10 +11,10 @@ namespace Infrastructure.Scraper;
 /// <param name="settings"></param>
 public class BrowserHost(BrowserSettings settings) : IBrowserHost
 {
-    private IPlaywright? _playwright;
-    private IBrowser? _browser;
-    private IBrowserContext? _context;
-    private IPage? _page;
+    private IPlaywright _playwright;
+    private IBrowser _browser;
+    private IBrowserContext _context;
+    private IPage _page;
     
     public IPage Page => _page ?? throw new NullReferenceException("Page does not exists");
 
@@ -51,7 +51,6 @@ public class BrowserHost(BrowserSettings settings) : IBrowserHost
         {
             Headless = settings.Headless,
             SlowMo = settings.SlowMo,
-            // ExecutablePath = browserOptions.ExecutablePath,
             Args =
             [
                 "--no-first-run",
@@ -88,7 +87,7 @@ public class BrowserHost(BrowserSettings settings) : IBrowserHost
                         "AppleWebKit/537.36 (KHTML, like Gecko) " +
                         "Chrome/118.0 Safari/537.36",
             Locale = "nb-NO",
-            ViewportSize = new ViewportSize { Width = 1280, Height = 720 },
+            ViewportSize = new ViewportSize { Width = 1920, Height = 1080 },
             IgnoreHTTPSErrors = true,
         };
         

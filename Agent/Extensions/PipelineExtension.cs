@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application.Pipelines;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Agent.Extensions;
 
@@ -9,6 +10,7 @@ public static class PipelineExtension
     /// </summary>
     public static IServiceCollection AddPipelines(this IServiceCollection services)
     {
+        services.AddSingleton<LoginPipeline>();
         return services;
     }
 }

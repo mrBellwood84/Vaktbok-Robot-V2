@@ -12,8 +12,11 @@ public static class ScraperExtension
     /// </summary>
     public static IServiceCollection AddScrapers(this IServiceCollection services)
     {
-        // Adding browserhost as singleton!!
-        services.AddSingleton<BrowserHost>();
+        // Adding browser host as singleton!!
+        services.AddSingleton<IBrowserHost, BrowserHost>();
+        
+        // add bots
+        services.AddTransient<ILoginBot, LoginBot>();
 
         return services;
     }
