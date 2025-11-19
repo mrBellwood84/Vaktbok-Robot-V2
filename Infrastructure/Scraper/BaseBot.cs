@@ -47,7 +47,7 @@ public class BaseBot(BrowserSettings settings)
         catch (TimeoutException e)
         {
             var message = $"Could click on element {xpath}.\nTimeout: {e.Message}";
-            throw new BrowserPageTimeoutException(message, e);
+            throw new BrowserElementNotFoundException(message, e);
         }
     }
     
@@ -78,12 +78,34 @@ public class BaseBot(BrowserSettings settings)
                 var inputValue = await locator.InputValueAsync();
                 if (inputValue == text) return;
             }
-            throw new BrowserPageTimeoutException($"Could not input text {xpath}");
+            throw new BrowserElementNotFoundException($"Could not input text {xpath}");
         }
         catch (TimeoutException e)
         {
             var message = $"Could input text on element {xpath}.\nTimeout: {e.Message}";
             throw new BrowserElementNotFoundException(message, e);
+        }
+    }
+
+    protected async Task<string> GetElementTextAsync(string xpath)
+    {
+        _check_page_exists();
+
+        try
+        {
+            var text = await Page.Locator(xpath).TextContentAsync(new LocatorTextContentOptions()
+            {
+                Timeout = settings.ContentLoadTimeout
+            });
+            
+            if (string.IsNullOrEmpty(text))
+                throw new BrowserElementNotFoundException($"Could not get text on element {xpath}");
+            return text;
+        }
+        catch (TimeoutException e)
+        {
+            var message = $"Could get text on element {xpath}.\nTimeout: {e.Message}";
+            throw new BrowserElementNoContentException(message, e);
         }
     }
     

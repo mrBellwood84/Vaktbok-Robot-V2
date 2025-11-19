@@ -23,11 +23,13 @@ public class Startup
     {
         // Set appsettings as DI items
         var browserSettings = Configuration.GetSection("BrowserSettings").Get<BrowserSettings>();
+        var calendarSettings = Configuration.GetSection("CalendarSettings").Get<CalendarSettings>();
         var connectionStrings = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
         var credentials =  Configuration.GetSection("Credentials").Get<Credentials>();
         var urls = Configuration.GetSection("Urls").Get<Urls>();
 
         services.AddSingleton(browserSettings!);
+        services.AddSingleton(calendarSettings!);
         services.AddSingleton(connectionStrings!);
         services.AddSingleton(credentials!);
         services.AddSingleton(urls!);

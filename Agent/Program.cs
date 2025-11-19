@@ -14,5 +14,5 @@ using var host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
-var loginPipeline = host.Services.GetService<LoginPipeline>();
-await loginPipeline.RunLoginSession();
+var loginPipeline = host.Services.GetRequiredService<CollectShiftDataPipeline>();
+await loginPipeline.RunPipelineAsync();
