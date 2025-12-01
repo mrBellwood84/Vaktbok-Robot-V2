@@ -1,9 +1,10 @@
 ﻿using Microsoft.Playwright;
 
-namespace Infrastructure.Scraper.Interfaces;
-
-public interface ILoginBot
+namespace Infrastructure.Scraper.Interfaces
 {
-    Task RunLoginProcedureAsync();
-    IPage Page { get; set; }
+    public interface ILoginBot
+    {
+        IPage Page { get; set; }
+        Task RunLoginProcedureAsync();
+    }
 }

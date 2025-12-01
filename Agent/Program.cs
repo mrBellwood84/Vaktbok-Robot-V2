@@ -1,8 +1,5 @@
 ﻿using Agent;
 using Application.Pipelines;
-using Domain.Settings;
-using Infrastructure.Scraper;
-using Infrastructure.Scraper.Bots;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -14,5 +11,5 @@ using var host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
-var loginPipeline = host.Services.GetRequiredService<CollectShiftDataPipeline>();
-await loginPipeline.RunPipelineAsync();
+var collectPipeline = host.Services.GetRequiredService<CollectShiftDataPipeline>();
+await collectPipeline.RunPipelineAsync();
