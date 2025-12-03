@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Scraper.Interfaces;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Application.Pipelines;
 
@@ -33,6 +34,12 @@ public class CollectShiftDataPipeline(
             {
                 // collect week data
                 var weekData = await shiftBookWeeksBot.CollectWeekData();
+                logger.LogInformation($"Parsing data for week: {shiftBookWeeksBot.CurrentWeekNumber}");
+
+                // DEV :: store collected data to file here
+                var fileName = $"test_json_week_{shiftBookWeeksBot.CurrentWeekNumber}.json";
+                var json = JsonSerializer.Serialize(weekData, new JsonSerializerOptions { WriteIndented = true });
+                await File.WriteAllTextAsync($"{fileName}", json);
 
                 // process week data here...
                 // DEV :: No parser added
