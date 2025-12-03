@@ -29,6 +29,9 @@ public class CollectShiftDataPipeline(
             await shiftBookWeeksBot.GotoShiftBookWeeks();
             await shiftBookWeeksBot.NavigateToStartPoint();
 
+            logger.LogInformation("Press enter to start collecting data...");
+            Console.ReadKey();
+
             // loop through weeks and collect data
             while (true)
             {

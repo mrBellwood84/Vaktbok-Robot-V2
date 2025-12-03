@@ -1,5 +1,6 @@
 ﻿using Domain.Settings;
 using Domain.SourceModels;
+using Infrastructure.Scraper.Exceptions;
 using Infrastructure.Scraper.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -81,7 +82,24 @@ public class ShiftBookWeeksBot(
     /// <summary>
     /// Click to next week in shift book weekly view
     /// </summary>
-    public async Task ClickNextWeek() => await ClickAsync(NextWeekButtonXPath);
+    public async Task ClickNextWeek() 
+    {
+
+        // get first date header cell before click
+        var prevCell = await (await Page.Locator(HeaderRowXPath).AllAsync())[1].TextContentAsync();
+        // click next week button
+        await ClickAsync(NextWeekButtonXPath);
+
+        var failsafe = 50;
+        while (failsafe-- > 0)
+        {
+            var nextCell = await (await Page.Locator(HeaderRowXPath).AllAsync())[1].TextContentAsync();
+            if (nextCell != prevCell) return;
+            await Task.Delay(100);
+        }
+
+        throw new BrowserPageTimeoutException("Timeout waiting for next week to load in shift book week view.");
+    }
 
     /// <summary>
     /// Determines whether the calendar endpoint has been reached based on the current year and week information
