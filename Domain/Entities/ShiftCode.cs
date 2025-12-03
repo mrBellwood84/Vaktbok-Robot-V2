@@ -1,14 +1,16 @@
 ﻿namespace Domain.Entities
 {
-    public class Employee
+    public class ShiftCode
     {
         public byte[] IdBinary { get; set; }
-        public string Name { get; set; }
+        public string Code { get; set; }
 
-        public Guid Id         {
+        public Guid Id
+        {
             get => new Guid(IdBinary);
             set => IdBinary = value.ToByteArray();
         }
         public DateTime CreatedAt { get; set; }
+
     }
 }

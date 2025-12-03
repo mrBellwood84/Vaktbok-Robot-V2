@@ -1,5 +1,7 @@
 ﻿using Agent.Extensions;
 using Domain.Settings;
+using Infrastructure.Logging;
+using Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,6 +10,7 @@ namespace Agent;
 public class Startup
 {
     private IConfiguration Configuration { get; }
+    private string _rootConnectionString = string.Empty;
 
     public Startup()
     {
@@ -25,15 +28,19 @@ public class Startup
         var browserSettings = Configuration.GetSection("BrowserSettings").Get<BrowserSettings>();
         var calendarSettings = Configuration.GetSection("CalendarSettings").Get<CalendarSettings>();
         var connectionStrings = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
-        var credentials =  Configuration.GetSection("Credentials").Get<Credentials>();
+        var credentials = Configuration.GetSection("Credentials").Get<Credentials>();
         var urls = Configuration.GetSection("Urls").Get<Urls>();
 
+        // set root connection strings for later use in startup
+        _rootConnectionString = connectionStrings.Root;
+
+        // add configurations
         services.AddSingleton(browserSettings!);
         services.AddSingleton(calendarSettings!);
         services.AddSingleton(connectionStrings!);
         services.AddSingleton(credentials!);
         services.AddSingleton(urls!);
-        
+
         // Add Services
         services.AddCacheServices();
         services.AddCommonServices();
@@ -41,5 +48,19 @@ public class Startup
         services.AddDbServices();
         services.AddPipelines();
         services.AddScrapers();
+    }
+
+    public void InitializeInfrastructure() 
+    {
+        Console.Clear();
+        AppLogger.LogInfo("Initializing application!");
+
+        // Initialize database
+        InitializeDatabase.Setup(_rootConnectionString);
+
+        // Initialize cache
+        AppLogger.LogDev("Initializing cache not added yet!");
+        AppLogger.LogDev("Press any key to continue...");
+        Console.ReadKey();
     }
 }

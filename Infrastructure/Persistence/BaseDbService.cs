@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Domain.Settings;
+using Infrastructure.Persistence.Interfaces;
 
 namespace Infrastructure.Persistence;
 
@@ -7,13 +8,13 @@ namespace Infrastructure.Persistence;
 /// Base dbservice class
 /// </summary>
 public class BaseDbService<TModel>(ConnectionStrings connectionStrings)
-    : DatabaseConnection(connectionStrings.Default)
+    : DatabaseConnection(connectionStrings.Robot), IBaseDbService<TModel>
 {
     /// <summary>
     /// Get all query
     /// </summary>
     internal string QueryAll { get; init; }
-    
+
     /// <summary>
     /// Command for inserting
     /// </summary>
@@ -23,9 +24,9 @@ public class BaseDbService<TModel>(ConnectionStrings connectionStrings)
     {
         if (string.IsNullOrEmpty(QueryAll))
             throw new NotSupportedException("QueryAll can not be null or empty.");
-        
+
         await using var connection = await CreateConnectionAsync();
-        var data =  await connection.QueryAsync<TModel>(QueryAll);
+        var data = await connection.QueryAsync<TModel>(QueryAll);
         return data.ToList();
     }
 
@@ -36,11 +37,11 @@ public class BaseDbService<TModel>(ConnectionStrings connectionStrings)
     {
         if (string.IsNullOrEmpty(Insert))
             throw new NullReferenceException("Insert cannot be null or empty.");
-        
+
         await using var connection = await CreateConnectionAsync();
         await connection.ExecuteAsync(QueryAll, model);
     }
-    
+
     /// <summary>
     /// Insert list of data to database
     /// </summary>

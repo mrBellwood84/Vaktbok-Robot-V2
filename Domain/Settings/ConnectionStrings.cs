@@ -5,5 +5,6 @@
 /// </summary>
 public class ConnectionStrings
 {
-    public string Default { get; init; }
+    public string Root { get; init; }
+    public string Robot { get; init; }
 }

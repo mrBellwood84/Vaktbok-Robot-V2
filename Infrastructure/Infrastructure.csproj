@@ -7,7 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Persistence\SqlScripts\0002_CreateTables.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Persistence\SqlScripts\0002_CreateTables.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Dapper" Version="2.1.66" />
+      <PackageReference Include="dbup-core" Version="6.0.15" />
+      <PackageReference Include="dbup-mysql" Version="6.1.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
       <PackageReference Include="Microsoft.Playwright" Version="1.56.0" />
       <PackageReference Include="MySql.Data" Version="9.5.0" />
