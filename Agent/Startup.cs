@@ -1,4 +1,5 @@
 ﻿using Agent.Extensions;
+using Application.DataServices.Interfaces;
 using Domain.Settings;
 using Infrastructure.Logging;
 using Infrastructure.Persistence;
@@ -10,7 +11,6 @@ namespace Agent;
 public class Startup
 {
     private IConfiguration Configuration { get; }
-    private string _rootConnectionString = string.Empty;
 
     public Startup()
     {
@@ -31,9 +31,6 @@ public class Startup
         var credentials = Configuration.GetSection("Credentials").Get<Credentials>();
         var urls = Configuration.GetSection("Urls").Get<Urls>();
 
-        // set root connection strings for later use in startup
-        _rootConnectionString = connectionStrings.Root;
-
         // add configurations
         services.AddSingleton(browserSettings!);
         services.AddSingleton(calendarSettings!);
@@ -50,17 +47,21 @@ public class Startup
         services.AddScrapers();
     }
 
-    public void InitializeInfrastructure() 
+    public async Task InitializeInfrastructure(IServiceProvider provider) 
     {
+        var connectionString = provider.GetRequiredService<ConnectionStrings>().Root;
+        var dataServiceRegistry = provider.GetRequiredService<IDataServiceRegistry>();
+
         Console.Clear();
-        AppLogger.LogInfo("Initializing application!");
+        AppLogger.LogInfo("Initializing application!\n");
 
         // Initialize database
-        InitializeDatabase.Setup(_rootConnectionString);
+        InitializeDatabase.Setup(connectionString);
 
         // Initialize cache
-        AppLogger.LogDev("Initializing cache not added yet!");
-        AppLogger.LogDev("Press any key to continue...");
-        Console.ReadKey();
+        AppLogger.LogInfo("Initializing data cache...");
+        await dataServiceRegistry.InitalizeCacheAsync();
+        AppLogger.LogSuccess("Data cache initialized!\n");
+        AppLogger.LogSuccess("Application initialized!\n");
     }
 }

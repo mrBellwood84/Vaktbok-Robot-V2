@@ -9,6 +9,10 @@ namespace Infrastructure.Persistence.Services
             : base(connectionStrings)
         {
             QueryAll = "SELECT * FROM ShiftRemark;";
+            QueryByIdBinary = @"
+                SELECT * FROM ShiftRemark
+                WHERE IdBinary = @IdBinary;";
+
             Insert = @"
                 INSERT INTO ShiftRemark (IdBinary, Remark)
                 VALUES (@IdBinary, @Remark);";

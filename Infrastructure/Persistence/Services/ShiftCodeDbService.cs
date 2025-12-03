@@ -8,6 +8,9 @@ namespace Infrastructure.Persistence.Services
         public ShiftCodeDbService(ConnectionStrings connectionStrings) : base(connectionStrings)
         {
             QueryAll = "SELECT * FROM ShiftCode;";
+            QueryByIdBinary = @"
+                SELECT * FROM ShiftCode
+                WHERE IdBinary = @IdBinary;";
             Insert = @"
                 INSERT INTO ShiftCode (IdBinary, Code)
                 VALUES (@IdBinary, @Code);";

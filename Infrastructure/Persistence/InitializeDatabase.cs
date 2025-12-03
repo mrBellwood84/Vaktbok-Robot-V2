@@ -24,7 +24,7 @@ namespace Infrastructure.Persistence
                 throw new Exception("Database migration failed", result.Error);
             }
 
-            AppLogger.LogSuccess("Database migration successful");
+            AppLogger.LogSuccess("Database migration successful\n");
         }
     }
 }

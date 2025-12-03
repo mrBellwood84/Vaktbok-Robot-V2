@@ -1,17 +1,21 @@
 ﻿using Agent;
-using Application.Pipelines;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+// Create startup and host
 
+var startup = new Startup();
 using var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
     {
-        var startup = new Startup();
         startup.ConfigureServices(services);
-        startup.InitializeInfrastructure();
     })
     .Build();
+
+// create provider
+var provider = host.Services;
+
+// initialize infrastructure
+await startup.InitializeInfrastructure(provider);
 
 // var collectPipeline = host.Services.GetRequiredService<CollectShiftDataPipeline>();
 // await collectPipeline.RunPipelineAsync();

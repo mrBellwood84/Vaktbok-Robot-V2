@@ -9,6 +9,10 @@ namespace Infrastructure.Persistence.Services
             : base(connectionStrings)
         {
             QueryAll = "SELECT * FROM Employee;";
+            QueryByIdBinary = @"
+                SELECT * FROM Employee
+                WHERE IdBinary = @IdBinary;";
+
             Insert = @"
                 INSERT INTO Employee (IdBinary, Name)
                 VALUES (@IdBinary, @Name);";
