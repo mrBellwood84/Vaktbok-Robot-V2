@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Domain.Entities;
+using Infrastructure.Caching;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Agent.Extensions;
 
@@ -9,6 +11,12 @@ public static class CacheServicesExtension
     /// </summary>
     public static IServiceCollection AddCacheServices(this IServiceCollection services)
     {
+        services.AddSingleton<IBaseCacheService<Employee>, EmployeeCacheService>();
+        services.AddSingleton<IBaseCacheService<Shift>, ShiftCacheService>();
+        services.AddSingleton<IBaseCacheService<ShiftCode>, ShiftCodeCacheService>();
+        services.AddSingleton<IBaseCacheService<ShiftRemark>, ShiftRemarkCacheService>();
+        services.AddSingleton<IBaseCacheService<Workday>, WorkdayCacheService>();
+
         return services;
     }
 }

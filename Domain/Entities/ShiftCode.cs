@@ -11,6 +11,5 @@
             set => IdBinary = value.ToByteArray();
         }
         public DateTime CreatedAt { get; set; }
-
     }
 }

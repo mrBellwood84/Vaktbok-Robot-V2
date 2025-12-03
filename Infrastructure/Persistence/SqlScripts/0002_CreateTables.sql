@@ -25,9 +25,7 @@ CREATE TABLE IF NOT EXISTS Workday (
 	IdBinary BINARY(16) PRIMARY KEY,
     Day SMALLINT NOT NULL,
     Week SMALLINT NOT NULL,
-    Date SMALLINT NOT NULL,
-    Month SMALLINT NOT NULL,
-    Year SMALLINT NOT NULL,
+    Date DATETIME NOT NULL,
     
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -42,7 +40,8 @@ CREATE TABLE IF NOT EXISTS Shift(
     StartTime VARCHAR(10),
     EndTime VARCHAR(10),
     
-    FOREIGN KEY (EmployeeId) REFERENCES Employee(IdBinary),
+    FOREIGN KEY (EmployeeId) REFERENCES Employee(IdBinary)
+		ON DELETE CASCADE,
     FOREIGN KEY (WorkdayId) REFERENCES Workday(IdBinary),
     FOREIGN KEY (ShiftCodeId) REFERENCES ShiftCode(IdBinary),
     FOREIGN KEY (ShiftRemarkId) REFERENCES ShiftRemark(IdBinary),
