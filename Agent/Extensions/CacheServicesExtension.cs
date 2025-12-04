@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using Infrastructure.Caching;
+using Persistence.Caching;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Agent.Extensions;

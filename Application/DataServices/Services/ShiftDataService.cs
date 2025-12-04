@@ -1,7 +1,7 @@
 ﻿using Application.DataServices.Interfaces;
 using Domain.Entities;
-using Infrastructure.Caching;
-using Infrastructure.Persistence.Interfaces;
+using Persistence.Caching;
+using Persistence.DbServices.Interfaces;
 
 namespace Application.DataServices.Services
 {

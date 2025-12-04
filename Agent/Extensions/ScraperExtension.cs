@@ -1,6 +1,6 @@
-﻿using Infrastructure.Scraper;
-using Infrastructure.Scraper.Bots;
-using Infrastructure.Scraper.Interfaces;
+﻿using WebHarvester.Harvest;
+using WebHarvester.Harvest.Bots;
+using WebHarvester.Harvest.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Agent.Extensions;

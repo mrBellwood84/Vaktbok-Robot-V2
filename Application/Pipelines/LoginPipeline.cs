@@ -1,5 +1,5 @@
-﻿using Infrastructure.Scraper.Interfaces;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using WebHarvester.Harvest.Interfaces;
 
 namespace Application.Pipelines;
 

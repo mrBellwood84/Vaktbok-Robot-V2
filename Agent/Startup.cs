@@ -1,8 +1,8 @@
 ﻿using Agent.Extensions;
 using Application.DataServices.Interfaces;
 using Domain.Settings;
-using Infrastructure.Logging;
-using Infrastructure.Persistence;
+using Common.Logging;
+using Persistence.DbServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -62,6 +62,7 @@ public class Startup
         AppLogger.LogInfo("Initializing data cache...");
         await dataServiceRegistry.InitalizeCacheAsync();
         AppLogger.LogSuccess("Data cache initialized!\n");
+
         AppLogger.LogSuccess("Application initialized!\n");
     }
 }

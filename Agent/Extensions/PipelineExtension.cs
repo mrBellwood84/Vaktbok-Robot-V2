@@ -1,5 +1,4 @@
 ﻿using Application.Pipelines;
-using Infrastructure.Scraper.Bots;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Agent.Extensions;

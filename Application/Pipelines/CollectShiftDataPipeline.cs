@@ -1,14 +1,13 @@
-﻿using Infrastructure.Scraper.Interfaces;
-using Microsoft.Extensions.Logging;
+﻿using Common.Logging;
 using System.Text.Json;
+using WebHarvester.Harvest.Interfaces;
 
 namespace Application.Pipelines;
 
 public class CollectShiftDataPipeline(
     IBrowserHost  browserHost, 
     ILoginBot loginBot,
-    IShiftBookWeeksBot shiftBookWeeksBot,
-    ILogger<CollectShiftDataPipeline> logger)
+    IShiftBookWeeksBot shiftBookWeeksBot)
 {
     public async Task RunPipelineAsync()
     {
@@ -22,22 +21,24 @@ public class CollectShiftDataPipeline(
 
             // run login procedure
             await loginBot.RunLoginProcedureAsync();
-            Console.Clear();
-            logger.LogInformation("Shift book weeks logged in");
+            AppLogger.LogSuccess("Login successful!\n");
+            AppLogger.LogInfo("Navigation to Shift Book Weeks - start point");
+
 
             // set shift book to start point for collection
             await shiftBookWeeksBot.GotoShiftBookWeeks();
             await shiftBookWeeksBot.NavigateToStartPoint();
 
-            logger.LogInformation("Press enter to start collecting data...");
+            AppLogger.LogInfo("Press enter to start collecting data...");
             Console.ReadKey();
+            Console.Clear();
 
             // loop through weeks and collect data
             while (true)
             {
                 // collect week data
                 var weekData = await shiftBookWeeksBot.CollectWeekData();
-                logger.LogInformation($"Parsing data for week: {shiftBookWeeksBot.CurrentWeekNumber}");
+                AppLogger.LogInfo($"Week data collected for week: {shiftBookWeeksBot.CurrentWeekNumber}");
 
                 // DEV :: store collected data to file here
                 var fileName = $"test_json_week_{shiftBookWeeksBot.CurrentWeekNumber}.json";
@@ -56,8 +57,7 @@ public class CollectShiftDataPipeline(
                 // DEV :: Use bulk insert when adding to database
 
 
-
-                logger.LogInformation("DEV :: Collected data here!. Click enter to continue to next week...");
+                AppLogger.LogDev("Collect data here, Click enter to continue to next week...");
                 Console.ReadKey();
 
                 var endpointReached = await shiftBookWeeksBot.CheckEndpointReached();

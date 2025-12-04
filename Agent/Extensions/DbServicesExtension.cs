@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
-using Infrastructure.Persistence.Interfaces;
-using Infrastructure.Persistence.Services;
+using Persistence.DbServices.Interfaces;
+using Persistence.DbServices.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Agent.Extensions;
