@@ -10,5 +10,5 @@ public static class CommonServicesExtension
     public static IServiceCollection AddCommonServices(this IServiceCollection services)
     {
         return services;
-    } 
+    }
 }

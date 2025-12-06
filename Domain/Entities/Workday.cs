@@ -5,6 +5,7 @@
         public byte[] IdBinary { get; set; }
         public short Day { get; set; }
         public short Week { get; set; }
+        public short Year { get; set; }
         public DateTime Date { get; set; }
 
         public Guid Id

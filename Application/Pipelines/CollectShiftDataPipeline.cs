@@ -56,10 +56,6 @@ public class CollectShiftDataPipeline(
                 // DEV :: No database service exists yet
                 // DEV :: Use bulk insert when adding to database
 
-
-                AppLogger.LogDev("Collect data here, Click enter to continue to next week...");
-                Console.ReadKey();
-
                 var endpointReached = await shiftBookWeeksBot.CheckEndpointReached();
                 if (endpointReached) break;
 

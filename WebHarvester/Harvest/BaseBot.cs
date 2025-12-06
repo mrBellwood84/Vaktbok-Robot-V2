@@ -39,7 +39,12 @@ public class BaseBot(BrowserSettings settings)
 
         try
         {
-            await Page.Locator(xpath).ClickAsync(new LocatorClickOptions()
+            var button = Page.Locator(xpath);
+            await button.WaitForAsync(new LocatorWaitForOptions()
+            {
+                Timeout = settings.ContentLoadTimeout
+            });
+            await button.ClickAsync(new LocatorClickOptions()
             {
                 Timeout = settings.ContentLoadTimeout
             });
@@ -93,7 +98,12 @@ public class BaseBot(BrowserSettings settings)
 
         try
         {
-            var text = await Page.Locator(xpath).TextContentAsync(new LocatorTextContentOptions()
+            var elem = Page.Locator(xpath);
+            await elem.WaitForAsync(new LocatorWaitForOptions()
+            {
+                Timeout = settings.ContentLoadTimeout
+            });
+            var text = await elem.TextContentAsync(new LocatorTextContentOptions()
             {
                 Timeout = settings.ContentLoadTimeout
             });

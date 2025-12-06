@@ -14,7 +14,7 @@ public static class ScraperExtension
     {
         // Adding browser host as singleton!!
         services.AddSingleton<IBrowserHost, BrowserHost>();
-        
+
         // add bots
         services.AddTransient<ILoginBot, LoginBot>();
         services.AddTransient<IShiftBookWeeksBot, ShiftBookWeeksBot>();

@@ -261,10 +261,12 @@ public class ShiftBookWeeksBot(
 
             // set header info
             shiftEntry.Year = headerInfo.Year;
-            shiftEntry.Month = headerInfo.Month;
-            shiftEntry.Date = headerInfo.Date;
             shiftEntry.Day = headerInfo.Day;
             shiftEntry.WeekNumber = CurrentWeekNumber;
+            shiftEntry.ShiftDate = new DateTime(
+                headerInfo.Year,
+                headerInfo.Month,
+                headerInfo.Date);
 
             // set cell content
             shiftEntry.CellContent = rawTextContent!.Trim();

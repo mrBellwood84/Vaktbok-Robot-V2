@@ -12,7 +12,7 @@ public static class PipelineExtension
     {
         services.AddSingleton<LoginPipeline>();
         services.AddSingleton<CollectShiftDataPipeline>();
-        
+
         return services;
     }
 }

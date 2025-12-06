@@ -27,5 +27,5 @@ public static class DataServicesExtension
 
         return services;
     }
-    
+
 }

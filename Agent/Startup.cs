@@ -47,7 +47,7 @@ public class Startup
         services.AddScrapers();
     }
 
-    public async Task InitializeInfrastructure(IServiceProvider provider) 
+    public async Task InitializeInfrastructure(IServiceProvider provider)
     {
         var connectionString = provider.GetRequiredService<ConnectionStrings>().Root;
         var dataServiceRegistry = provider.GetRequiredService<IDataServiceRegistry>();
