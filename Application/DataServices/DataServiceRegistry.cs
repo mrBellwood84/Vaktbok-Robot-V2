@@ -4,17 +4,17 @@ using Domain.Entities;
 namespace Application.DataServices
 {
     public class DataServiceRegistry(
-        IDataService<Employee> employeeDataService,
-        IDataService<ShiftCode> shiftCodeDataService,
-        IShiftDataService shiftDataService,
-        IDataService<ShiftRemark> shiftRemarkDataService,
-        IDataService<Workday> workdayDataService) : IDataServiceRegistry
+        IBaseDataService<Employee> employeeDataService,
+        IBaseDataService<ShiftCode> shiftCodeDataService,
+        IBaseDataService<Shift> shiftDataService,
+        IBaseDataService<ShiftRemark> shiftRemarkDataService,
+        IBaseDataService<Workday> workdayDataService) : IDataServiceRegistry
     {
-        public IDataService<Employee> EmployeeDataService => employeeDataService;
-        public IDataService<ShiftCode> ShiftCodeDataService => shiftCodeDataService;
-        public IShiftDataService ShiftDataService => shiftDataService;
-        public IDataService<ShiftRemark> ShiftRemarkDataService => shiftRemarkDataService;
-        public IDataService<Workday> WorkdayDataService => workdayDataService;
+        public IBaseDataService<Employee> EmployeeDataService => employeeDataService;
+        public IBaseDataService<ShiftCode> ShiftCodeDataService => shiftCodeDataService;
+        public IBaseDataService<Shift> ShiftDataService => shiftDataService;
+        public IBaseDataService<ShiftRemark> ShiftRemarkDataService => shiftRemarkDataService;
+        public IBaseDataService<Workday> WorkdayDataService => workdayDataService;
 
         public async Task InitalizeCacheAsync()
         {

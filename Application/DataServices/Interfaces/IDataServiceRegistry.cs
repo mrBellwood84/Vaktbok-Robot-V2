@@ -4,11 +4,11 @@ namespace Application.DataServices.Interfaces
 {
     public interface IDataServiceRegistry
     {
-        IDataService<Employee> EmployeeDataService { get; }
-        IDataService<ShiftCode> ShiftCodeDataService { get; }
-        IShiftDataService ShiftDataService { get; }
-        IDataService<ShiftRemark> ShiftRemarkDataService { get; }
-        IDataService<Workday> WorkdayDataService { get; }
+        IBaseDataService<Employee> EmployeeDataService { get; }
+        IBaseDataService<ShiftCode> ShiftCodeDataService { get; }
+        IBaseDataService<Shift> ShiftDataService { get; }
+        IBaseDataService<ShiftRemark> ShiftRemarkDataService { get; }
+        IBaseDataService<Workday> WorkdayDataService { get; }
 
         Task InitalizeCacheAsync();
     }

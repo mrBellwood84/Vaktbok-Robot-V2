@@ -23,3 +23,4 @@ var loginPipeline = provider.GetRequiredService<LoginPipeline>();
 var collectorPipeline = provider.GetRequiredService<CollectShiftDataPipeline>();
 
 await collectorPipeline.RunPipelineAsync();
+    

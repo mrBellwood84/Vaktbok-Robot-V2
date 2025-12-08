@@ -43,25 +43,26 @@ public class BaseDbService<TModel>(ConnectionStrings connectionStrings)
         if (string.IsNullOrEmpty(QueryByIdBinary))
             throw new NotSupportedException("QueryByIdBinary can not be null or empty.");
         await using var connection = await CreateConnectionAsync();
-        var data = await connection.QuerySingleOrDefaultAsync<TModel>(QueryByIdBinary, new { Id = id });
+        var data = await connection.QuerySingleOrDefaultAsync<TModel>(QueryByIdBinary, new { IdBinary = id });
         return data;
     }
 
     /// <summary>
     /// Insert single entity to database
     /// </summary>
-    public async Task InsertAsync(TModel model)
+    public async Task CreateAsync(TModel model)
     {
         if (string.IsNullOrEmpty(Insert))
             throw new NullReferenceException("Insert cannot be null or empty.");
 
         await using var connection = await CreateConnectionAsync();
-        await connection.ExecuteAsync(QueryAll, model);
+        await connection.ExecuteAsync(Insert, model);
     }
+
     /// <summary>
     /// Insert list of data to database
     /// </summary>
-    public async Task InsertBulkAsync(IEnumerable<TModel> models)
+    public async Task CreateBulkAsync(IEnumerable<TModel> models)
     {
         if (string.IsNullOrEmpty(Insert))
             throw new NullReferenceException("Insert cannot be null or empty");

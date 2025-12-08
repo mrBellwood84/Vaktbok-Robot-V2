@@ -16,11 +16,11 @@ public static class DataServicesExtension
     public static IServiceCollection AddDataServices(this IServiceCollection services)
     {
         // add single data services
-        services.AddScoped<IDataService<Employee>, EmployeeDataService>();
-        services.AddScoped<IDataService<ShiftCode>, ShiftcodeDataService>();
-        services.AddScoped<IShiftDataService, ShiftDataService>();
-        services.AddScoped<IDataService<ShiftRemark>, ShiftRemarkDataService>();
-        services.AddScoped<IDataService<Workday>, WorkdayDataService>();
+        services.AddScoped<IBaseDataService<Employee>, EmployeeDataService>();
+        services.AddScoped<IBaseDataService<ShiftCode>, ShiftCodeDataService>();
+        services.AddScoped<IBaseDataService<Shift>, ShiftDataService>();
+        services.AddScoped<IBaseDataService<ShiftRemark>, ShiftRemarkDataService>();
+        services.AddScoped<IBaseDataService<Workday>, WorkdayDataService>();
 
         // add registry
         services.AddScoped<IDataServiceRegistry, DataServiceRegistry>();

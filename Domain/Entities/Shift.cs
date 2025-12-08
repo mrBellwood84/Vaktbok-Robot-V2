@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.Interfaces;
+
+namespace Domain.Entities
 {
-    public class Shift
+    public class Shift : IHasIdBinary
     {
         public byte[] IdBinary { get; set; }
         public byte[] EmployeeId { get; set; }

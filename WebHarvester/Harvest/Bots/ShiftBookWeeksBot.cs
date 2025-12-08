@@ -37,7 +37,6 @@ public class ShiftBookWeeksBot(
     private SourceWorkbookWeekHeader[] currentWeekHeaders = null;
 
 
-
     /// <summary>
     /// This action goes to shift book week view
     /// </summary>

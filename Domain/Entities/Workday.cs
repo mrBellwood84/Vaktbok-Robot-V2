@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.Interfaces;
+
+namespace Domain.Entities
 {
-    public class Workday
+    public class Workday : IHasIdBinary
     {
         public byte[] IdBinary { get; set; }
         public short Day { get; set; }

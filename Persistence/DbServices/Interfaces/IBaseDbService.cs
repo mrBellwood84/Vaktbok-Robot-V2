@@ -4,7 +4,7 @@
     {
         Task<List<TModel>> GetAllAsync();
         Task<TModel> GetByIdBinaryAsync(byte[] id);
-        Task InsertAsync(TModel model);
-        Task InsertBulkAsync(IEnumerable<TModel> models);
+        Task CreateAsync(TModel model);
+        Task CreateBulkAsync(IEnumerable<TModel> models);
     }
 }

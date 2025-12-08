@@ -1,24 +1,11 @@
-﻿using Application.DataServices.Interfaces;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Persistence.Caching;
 using Persistence.DbServices.Interfaces;
 
-namespace Application.DataServices.Services
-{
-    public class WorkdayDataService(
-        IBaseCacheService<Workday> cacheService,
-        IBaseDbService<Workday> dbService) : IDataService<Workday>
-    {
-        public async Task<Workday> AddSingleAsync(Workday model)
-        {
-            await dbService.InsertAsync(model);
-            var data = await dbService.GetByIdBinaryAsync(model.IdBinary);
-            cacheService.Items.Add(data);
-            return data;
-        }
+namespace Application.DataServices.Services;
 
-        public bool CheckExists(string key) => cacheService.Items.Any(e => e.Key == key);
-        public Workday GetSingle(string key) => cacheService.Items.First(e => e.Key == key);
-        public async Task InitCacheAsync() => cacheService.Items = await dbService.GetAllAsync();
-    }
-}
+public class WorkdayDataService(
+    IBaseCacheService<Workday> cacheService,
+    IBaseDbService<Workday> dbService) 
+    : BaseDataService<Workday>(cacheService, dbService)
+{ }

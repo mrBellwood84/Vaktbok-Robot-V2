@@ -14,8 +14,8 @@ namespace Persistence.DbServices.Services
                 WHERE IdBinary = @IdBinary;";
 
             Insert = @"
-                INSERT INTO Workday (IdBinary, Day, Week, Date, Month, Year)
-                VALUES (@IdBinary, @Day, @Week, @Date, @Month, @Year);";
+                INSERT INTO Workday (IdBinary, Day, Week, Year, Date)
+                VALUES (@IdBinary, @Day, @Week, @Year, @Date);";
         }
     }
 }

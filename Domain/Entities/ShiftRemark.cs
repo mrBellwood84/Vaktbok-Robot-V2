@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.Interfaces;
+
+namespace Domain.Entities
 {
-    public class ShiftRemark
+    public class ShiftRemark : IHasIdBinary
     {
         public byte[] IdBinary { get; set; }
         public string Remark { get; set; }

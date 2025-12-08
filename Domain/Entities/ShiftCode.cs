@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.Interfaces;
+
+namespace Domain.Entities
 {
-    public class ShiftCode
+    public class ShiftCode : IHasIdBinary
     {
         public byte[] IdBinary { get; set; }
         public string Code { get; set; }

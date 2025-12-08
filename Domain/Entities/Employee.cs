@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.Interfaces;
+
+namespace Domain.Entities
 {
-    public class Employee
+    public class Employee : IHasIdBinary
     {
         public byte[] IdBinary { get; set; }
         public string Name { get; set; }
