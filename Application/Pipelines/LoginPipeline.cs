@@ -3,7 +3,8 @@ using WebHarvester.Harvest.Interfaces;
 
 namespace Application.Pipelines;
 
-public class LoginPipeline(IBrowserHost browserHost, ILoginBot loginBot, ILogger<LoginPipeline> logger)
+
+public class LoginPipeline(IBrowserHost browserHost, ILoginBot loginBot, ILogger<LoginPipeline> logger) 
 {
     public async Task RunLoginSession()
     {

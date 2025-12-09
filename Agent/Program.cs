@@ -24,3 +24,4 @@ var collectorPipeline = provider.GetRequiredService<CollectShiftDataPipeline>();
 
 await collectorPipeline.RunPipelineAsync();
     
+    

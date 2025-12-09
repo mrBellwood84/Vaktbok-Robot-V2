@@ -40,7 +40,6 @@ namespace WebHarvester.Cropper
                 var workday = CropWorkday(rawShift);
                 var shiftCode = CropShiftcode(rawShift);
                 var shiftTime = CropShiftTime(rawShift);
-                var shiftTimeSplit = shiftTime != null ? shiftTime.Split(" - ") : null;
 
                 var shift = new Shift
                 {
@@ -48,8 +47,7 @@ namespace WebHarvester.Cropper
                     EmployeeId = employee.IdBinary,
                     WorkdayId = workday.IdBinary,
                     ShiftCodeId = shiftCode.IdBinary,
-                    StartTime = shiftTimeSplit != null ? shiftTimeSplit[0] : null,
-                    EndTime = shiftTimeSplit != null ? shiftTimeSplit[1] : null,
+                    Time = shiftTime
                 };
 
                 Shifts.Add(shift);

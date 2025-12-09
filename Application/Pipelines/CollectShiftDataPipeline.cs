@@ -124,7 +124,7 @@ public class CollectShiftDataPipeline(
         if (exist.ShiftCodeId != shift.ShiftCodeId) return shift;
         
         // return shift if any time values are changed
-        if (exist.StartTime != shift.StartTime || exist.EndTime != shift.EndTime) return shift;
+        if (exist.Time != shift.Time) return shift;
 
         // return null at this point
         return null;

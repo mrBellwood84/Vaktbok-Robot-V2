@@ -5,13 +5,12 @@ namespace Domain.Entities
     public class Shift : IHasIdBinary
     {
         public byte[] IdBinary { get; set; }
-        public byte[] EmployeeId { get; set; }
-        public byte[] WorkdayId { get; set; }
-        public byte[] ShiftCodeId { get; set; }
+        public byte[] EmployeeId { get; init; }
+        public byte[] WorkdayId { get; init; }
+        public byte[] ShiftCodeId { get; init; }
         public byte[] ShiftRemarkId { get; set; }
-
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
+        
+        public string Time { get; init; }
 
         public Guid Id
         {
