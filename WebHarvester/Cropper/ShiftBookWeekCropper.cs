@@ -148,7 +148,7 @@ namespace WebHarvester.Cropper
             {
                 // remove parentheses
                 shiftTime = shiftTime.Substring(1, shiftTime.Length - 2);
-                return shiftTime;
+                return shiftTime.Trim();
             }
 
             // find shift time without parentheses
@@ -158,7 +158,7 @@ namespace WebHarvester.Cropper
             {
                 // return the single match
                 var time = anyTimeMatches[0].Groups[0].Value;
-                return time;
+                return time.Trim();
             }
 
             // find first and last time if multiple times exist
@@ -166,8 +166,8 @@ namespace WebHarvester.Cropper
             {
                 var singleTimeRegex = new Regex(_singleTimePattern);
                 var singleTimeMatches = singleTimeRegex.Matches(data);
-                var first = singleTimeMatches[0].Groups[0].Value;
-                var last = singleTimeMatches[singleTimeMatches.Count - 1].Groups[0].Value;
+                var first = singleTimeMatches[0].Groups[0].Value.Trim();
+                var last = singleTimeMatches[singleTimeMatches.Count - 1].Groups[0].Value.Trim();
                 return $"{first} - {last}";
             }
 

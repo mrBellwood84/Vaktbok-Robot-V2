@@ -248,11 +248,17 @@ public class ShiftBookWeeksBot(
         for (int i = 0; i < cells.Count; i++)
         {
             var rawTextContent = await cells[i].TextContentAsync();
+            // thos extract name from cell, first cell has name only
             if (i == 0)
             {
                 result.EmployeeName = rawTextContent!.Trim();
                 continue;
             }
+
+            if (result.EmployeeName == "LEDIG") continue;
+            if (result.EmployeeName == "") continue;
+
+            // remaining code will parse worktime
 
             // parse shift entry
             var shiftEntry = new SourceShiftEntry();
