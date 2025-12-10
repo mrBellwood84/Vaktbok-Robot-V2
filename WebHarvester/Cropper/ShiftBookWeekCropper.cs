@@ -44,9 +44,9 @@ namespace WebHarvester.Cropper
                 var shift = new Shift
                 {
                     IdBinary = Guid.NewGuid().ToByteArray(),
-                    EmployeeId = employee.IdBinary,
-                    WorkdayId = workday.IdBinary,
-                    ShiftCodeId = shiftCode.IdBinary,
+                    EmployeeIdBinary = employee.IdBinary,
+                    WorkdayIdBinary = workday.IdBinary,
+                    ShiftCodeIdBinary = shiftCode.IdBinary,
                     Time = shiftTime
                 };
 

@@ -33,20 +33,20 @@ CREATE TABLE IF NOT EXISTS Workday (
 
 CREATE TABLE IF NOT EXISTS Shift(
 	IdBinary BINARY(16) PRIMARY KEY,
-    EmployeeId BINARY(16) NOT NULL,
-    WorkdayId BINARY(16) NOT NULL,
-    ShiftCodeId BINARY(16),
-    ShiftRemarkId Binary(16),
+    EmployeeIdBinary BINARY(16) NOT NULL,
+    WorkdayIdBinary BINARY(16) NOT NULL,
+    ShiftCodeIdBinary BINARY(16),
+    ShiftRemarkIdBinary Binary(16),
     
     Time VARCHAR(15),
     
-    FOREIGN KEY (EmployeeId) REFERENCES Employee(IdBinary)
+    FOREIGN KEY (EmployeeIdBinary) REFERENCES Employee(IdBinary)
 		ON DELETE CASCADE,
-    FOREIGN KEY (WorkdayId) REFERENCES Workday(IdBinary)
+    FOREIGN KEY (WorkdayIdBinary) REFERENCES Workday(IdBinary)
         ON DELETE RESTRICT,
-    FOREIGN KEY (ShiftCodeId) REFERENCES ShiftCode(IdBinary)
+    FOREIGN KEY (ShiftCodeIdBinary) REFERENCES ShiftCode(IdBinary)
         ON DELETE RESTRICT,
-    FOREIGN KEY (ShiftRemarkId) REFERENCES ShiftRemark(IdBinary)
+    FOREIGN KEY (ShiftRemarkIdBinary) REFERENCES ShiftRemark(IdBinary)
         ON DELETE RESTRICT,
     
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP

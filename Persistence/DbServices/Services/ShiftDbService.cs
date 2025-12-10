@@ -14,8 +14,8 @@ namespace Persistence.DbServices.Services
                 WHERE IdBinary = @IdBinary;";
 
             Insert = @"
-                INSERT INTO Shift (IdBinary, EmployeeId, WorkdayId, ShiftCodeId, ShiftRemarkId, Time)
-                VALUES (@IdBinary, @EmployeeId, @WorkdayId, @ShiftCodeId, @ShiftRemarkId, @Time);";
+                INSERT INTO Shift (IdBinary, EmployeeIdBinary, WorkdayIdBinary, ShiftCodeIdBinary, ShiftRemarkIdBinary, Time)
+                VALUES (@IdBinary, @EmployeeIdBinary, @WorkdayIdBinary, @ShiftCodeIdBinary, @ShiftRemarkIdBinary, @Time);";
         }
     }
 }

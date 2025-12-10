@@ -113,7 +113,7 @@ public class CollectShiftDataPipeline(
     {
         // linq query shift on employee and workdate, get latest
         var exist = dataServiceRegistry.ShiftDataService.Data
-            .Where(x => x.EmployeeId.SequenceEqual(shift.EmployeeId) && x.WorkdayId.SequenceEqual(shift.WorkdayId))
+            .Where(x => x.EmployeeGuid == shift.EmployeeGuid && x.WorkdayGuid == shift.WorkdayGuid)
             .OrderByDescending(x => x.CreatedAt)
             .FirstOrDefault();
 
@@ -121,7 +121,7 @@ public class CollectShiftDataPipeline(
         if (exist == null) return shift;
 
         // return shift if shiftcode is different
-        if (!exist.ShiftCodeId.SequenceEqual(shift.ShiftCodeId)) return shift;
+        if (exist.ShiftCodeGuid != shift.ShiftCodeGuid ) return shift;
         
         // return shift if any time values are changed
         if (exist.Time != shift.Time) return shift;
