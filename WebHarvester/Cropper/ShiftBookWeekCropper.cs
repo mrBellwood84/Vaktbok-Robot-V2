@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Domain.SourceModels;
-using System.Net.WebSockets;
 using System.Text.RegularExpressions;
 
 namespace WebHarvester.Cropper
@@ -33,6 +32,8 @@ namespace WebHarvester.Cropper
         {
             // extract employee model
             var employee = CropEmployee();
+            if (employee.Name.Length < 5) return;
+            if (employee.Name.ToUpper() == "LEDIG") return;
 
             // extract shift code model
             foreach (var rawShift in rawData.Shifts)
@@ -64,13 +65,13 @@ namespace WebHarvester.Cropper
         {
             var exists = employees.Where(x => x.Name == rawData.EmployeeName).FirstOrDefault();
             if (exists != null) return exists;
-            
+
             NewEmployee = new Employee
             {
                 IdBinary = Guid.NewGuid().ToByteArray(),
                 Name = rawData.EmployeeName,
             };
-            
+
             return NewEmployee;
         }
 
@@ -122,7 +123,7 @@ namespace WebHarvester.Cropper
 
             var inNew = NewShiftCodes.Where(x => x.Code == code).FirstOrDefault();
             if (inNew != null) return inNew;
-            
+
             var newShiftCode = new ShiftCode
             {
                 IdBinary = Guid.NewGuid().ToByteArray(),
@@ -170,7 +171,6 @@ namespace WebHarvester.Cropper
                 var last = singleTimeMatches[singleTimeMatches.Count - 1].Groups[0].Value.Trim();
                 return $"{first} - {last}";
             }
-
 
             return null;
         }
