@@ -1,9 +1,11 @@
 ﻿using Application.DataServices.Interfaces;
 using Common.Logging;
 using Domain.Entities;
+using Domain.Misc;
 using Domain.SourceModels;
 using WebHarvester.Cropper;
 using WebHarvester.Harvest.Interfaces;
+using ZstdSharp.Unsafe;
 
 namespace Application.Pipelines;
 
@@ -13,6 +15,8 @@ public class CollectShiftDataPipeline(
     IShiftBookWeeksBot shiftBookWeeksBot,
     IDataServiceRegistry dataServiceRegistry)
 {
+    private ShiftWeekReport _report =  new ShiftWeekReport();
+    
     public async Task RunPipelineAsync()
     {
         Console.Clear();
@@ -27,7 +31,6 @@ public class CollectShiftDataPipeline(
             await loginBot.RunLoginProcedureAsync();
             AppLogger.LogSuccess("Login successful!\n");
             AppLogger.LogInfo("Navigation to Shift Book Weeks - start point");
-
 
             // set shift book to start point for collection
             await shiftBookWeeksBot.GotoShiftBookWeeks();
@@ -48,13 +51,18 @@ public class CollectShiftDataPipeline(
                 {
                     await ParseEmployeeWeekly(data);
                 }
+                
+                _report.ReportNewEntities();
+                _report.Clear();
+                AppLogger.LogSuccess("Harvest and cropping complete!\n");
 
                 var endpointReached = await shiftBookWeeksBot.CheckEndpointReached();
                 if (endpointReached) break;
 
                 await shiftBookWeeksBot.ClickNextWeek();
             }
-
+            
+            _report.ReportAllEntities();
             Console.WriteLine("DEV :: End of code this far ");
             Console.ReadLine();
         }
@@ -83,10 +91,25 @@ public class CollectShiftDataPipeline(
         cropper.Crop();
 
         // save new employee, new workday, new shiftcode data
-        if (cropper.NewEmployee != null) await dataServiceRegistry.EmployeeDataService.AddSingleAsync(cropper.NewEmployee);
-        if (cropper.NewWorkdays.Count > 0) await dataServiceRegistry.WorkdayDataService.AddRangeAsync(cropper.NewWorkdays);
-        if (cropper.NewShiftCodes.Count > 0) await dataServiceRegistry.ShiftCodeDataService.AddRangeAsync(cropper.NewShiftCodes);
+        if (cropper.NewEmployee != null)
+        {
+            await dataServiceRegistry.EmployeeDataService.AddSingleAsync(cropper.NewEmployee);
+            _report.NewEmployees++;
+        }
 
+        if (cropper.NewWorkdays.Count > 0)
+        {
+            await dataServiceRegistry.WorkdayDataService.AddRangeAsync(cropper.NewWorkdays);
+            _report.NewWorkdays += cropper.NewWorkdays.Count();
+        }
+
+        if (cropper.NewShiftCodes.Count > 0)
+        {
+            await dataServiceRegistry.ShiftCodeDataService.AddRangeAsync(cropper.NewShiftCodes);
+            _report.NewShiftCodes += cropper.NewShiftCodes.Count();
+        }
+        
+        
         // check if shift exists, save if not exist or different!
         List<Shift> newShifts = [];
         foreach (var shift in cropper.Shifts)
@@ -118,13 +141,25 @@ public class CollectShiftDataPipeline(
             .FirstOrDefault();
 
         // return shift if it does not exist in cache / db
-        if (exist == null) return shift;
+        if (exist == null)
+        {
+            _report.NewShifts++;
+            return shift;
+        }
 
         // return shift if shiftcode is different
-        if (exist.ShiftCodeGuid != shift.ShiftCodeGuid ) return shift;
+        if (exist.ShiftCodeGuid != shift.ShiftCodeGuid)
+        {
+            _report.UpdatedShifts++;
+            return shift;
+        }
         
         // return shift if any time values are changed
-        if (exist.Time != shift.Time) return shift;
+        if (exist.Time != shift.Time)
+        {
+            _report.UpdatedShifts++;
+            return shift;
+        }
 
         // return null at this point
         return null;
