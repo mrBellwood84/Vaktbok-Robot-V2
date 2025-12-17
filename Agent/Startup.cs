@@ -29,6 +29,7 @@ public class Startup
         var calendarSettings = Configuration.GetSection("CalendarSettings").Get<CalendarSettings>();
         var connectionStrings = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
         var credentials = Configuration.GetSection("Credentials").Get<Credentials>();
+        var fileSettings = Configuration.GetSection("FileSettings").Get<FileSettings>();
         var urls = Configuration.GetSection("Urls").Get<Urls>();
 
         // add configurations
@@ -36,6 +37,7 @@ public class Startup
         services.AddSingleton(calendarSettings!);
         services.AddSingleton(connectionStrings!);
         services.AddSingleton(credentials!);
+        services.AddSingleton(fileSettings!);
         services.AddSingleton(urls!);
 
         // Add Services

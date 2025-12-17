@@ -5,6 +5,16 @@ using Microsoft.Extensions.Hosting;
 
 // Create startup and host
 
+var pathString = @"E:/TestFolder";
+var fileString = "test.txt";
+var fullPath = Path.Combine(pathString, fileString);
+
+var text = "Hello world";
+
+Directory.CreateDirectory(pathString);
+File.WriteAllText(fullPath, text);
+
+/*
 var startup = new Startup();
 using var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
@@ -24,4 +34,4 @@ var collectorPipeline = provider.GetRequiredService<CollectShiftDataPipeline>();
 
 await collectorPipeline.RunPipelineAsync();
     
-    
+    */

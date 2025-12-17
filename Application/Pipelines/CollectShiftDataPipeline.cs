@@ -5,7 +5,6 @@ using Domain.Misc;
 using Domain.SourceModels;
 using WebHarvester.Cropper;
 using WebHarvester.Harvest.Interfaces;
-using ZstdSharp.Unsafe;
 
 namespace Application.Pipelines;
 
@@ -15,7 +14,7 @@ public class CollectShiftDataPipeline(
     IShiftBookWeeksBot shiftBookWeeksBot,
     IDataServiceRegistry dataServiceRegistry)
 {
-    private ShiftWeekReport _report =  new ShiftWeekReport();
+    private ShiftWeekReport _report =  new();
     
     public async Task RunPipelineAsync()
     {
@@ -100,13 +99,13 @@ public class CollectShiftDataPipeline(
         if (cropper.NewWorkdays.Count > 0)
         {
             await dataServiceRegistry.WorkdayDataService.AddRangeAsync(cropper.NewWorkdays);
-            _report.NewWorkdays += cropper.NewWorkdays.Count();
+            _report.NewWorkdays += cropper.NewWorkdays.Count;
         }
 
         if (cropper.NewShiftCodes.Count > 0)
         {
             await dataServiceRegistry.ShiftCodeDataService.AddRangeAsync(cropper.NewShiftCodes);
-            _report.NewShiftCodes += cropper.NewShiftCodes.Count();
+            _report.NewShiftCodes += cropper.NewShiftCodes.Count;
         }
         
         
