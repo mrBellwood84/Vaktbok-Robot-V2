@@ -21,13 +21,10 @@ public class ShiftBookWeeksBot(
     private const string HeaderRowXPath = "(//table)[7]//tr[1]/td";
     private const string TableRowsXPath = "(//table)[8]/tbody/tr";
 
-    private const string PrintWeekButtonXPath = "//div[@data-bind=\"click: PrintLogic()\"]";
-
     private const string CalendarBackButtonXPath = "(//li[@class=\"prev-month button no-select\"])[1]";
     private const string CalendarForwardButtonXPath = "(//li[@class=\"next-month button no-select\"])[1]";
     private const string CalendarWeekNumbersXPath = "(//table[@class=\"week-table\"])[1]//td[@class=\"week-number\"]";
     private const string CalendarYearContainerXPath = "(//li[@class=\"current-month caption no-select\"])[1]//span";
-
 
     // current week number and year
     public int CurrentWeekNumber { get; set; } = 0;
@@ -35,7 +32,6 @@ public class ShiftBookWeeksBot(
 
     // column headers for current week
     private SourceWorkbookWeekHeader[] currentWeekHeaders = null;
-
 
     /// <summary>
     /// This action goes to shift book week view
@@ -82,7 +78,6 @@ public class ShiftBookWeeksBot(
     /// </summary>
     public async Task ClickNextWeek() 
     {
-
         // get first date header cell before click
         var prevCell = await (await Page.Locator(HeaderRowXPath).AllAsync())[1].TextContentAsync();
         // click next week button
