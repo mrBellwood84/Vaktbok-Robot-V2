@@ -1,8 +1,11 @@
 ﻿using Application.DataServices.Interfaces;
 using Common.Logging;
+using Common.PdfWriter;
 using Domain.Entities;
 using Domain.Misc;
+using Domain.Settings;
 using Domain.SourceModels;
+using Persistence.DbServices.Interfaces;
 using WebHarvester.Cropper;
 using WebHarvester.Harvest.Interfaces;
 
@@ -12,7 +15,9 @@ public class CollectShiftDataPipeline(
     IBrowserHost  browserHost, 
     ILoginBot loginBot,
     IShiftBookWeeksBot shiftBookWeeksBot,
-    IDataServiceRegistry dataServiceRegistry)
+    IDataServiceRegistry dataServiceRegistry,
+    IBaseDbService<FilePath> filepathDbService,
+    FileSettings fileSettings)
 {
     private ShiftWeekReport _report =  new();
     
@@ -42,17 +47,45 @@ public class CollectShiftDataPipeline(
             // loop through weeks and collect data
             while (true)
             {
+                // collection of new shifts
+                List<Shift> shifts = [];
+                
                 // collect week data
                 var weekData = await shiftBookWeeksBot.CollectWeekData();
                 AppLogger.LogInfo($"Week data collected for week: {shiftBookWeeksBot.CurrentWeekNumber}");
 
                 foreach (var data in weekData)
                 {
-                    await ParseEmployeeWeekly(data);
+                    var newShifts = await ParseEmployeeWeekly(data);
+                    shifts.AddRange(newShifts);
+                }
+
+                if (shifts.Count > 0)
+                {
+                    // save page as pdf
+                    var filePath = await PdfWriter.WorkbookWeeklyToFile(
+                        shiftBookWeeksBot.Page,
+                        shiftBookWeeksBot.CurrentWeekNumber.ToString(),
+                        fileSettings.DocumentDirectory);
+                    
+                    // create and store filepath
+                    var filePathEntity = new FilePath
+                    {
+                        IdBinary = Guid.NewGuid().ToByteArray(),
+                        Path = filePath
+                    };
+                    await filepathDbService.CreateAsync(filePathEntity);
+                    
+                    // add filepath id to models
+                    foreach (var item in shifts)
+                        item.FilePathIdBinary = filePathEntity.IdBinary;
+                    
+                    // save models to database
+                    await dataServiceRegistry.ShiftDataService.AddRangeAsync(shifts);
                 }
                 
-                _report.ReportNewEntities();
-                _report.Clear();
+                
+                PrintWeeklyReport();
                 AppLogger.LogSuccess("Harvest and cropping complete!\n");
 
                 var endpointReached = await shiftBookWeeksBot.CheckEndpointReached();
@@ -61,7 +94,7 @@ public class CollectShiftDataPipeline(
                 await shiftBookWeeksBot.ClickNextWeek();
             }
             
-            _report.ReportAllEntities();
+            PrintFullWeeklyReport();
             Console.WriteLine("DEV :: End of code this far ");
             Console.ReadLine();
         }
@@ -79,7 +112,7 @@ public class CollectShiftDataPipeline(
     /// shift code, or shift information found in the provided weekly data. Only new or changed records are added;
     /// existing records are not duplicated.</remarks>
     /// <param name="weekData">The source data representing an employee's shifts and related information for a single week. Cannot be null.</param>
-    private async Task ParseEmployeeWeekly(SourceEmployeeWeek weekData)
+    private async Task<List<Shift>> ParseEmployeeWeekly(SourceEmployeeWeek weekData)
     {
         // crop week data
         var cropper = new ShiftBookWeekCropper(
@@ -108,7 +141,6 @@ public class CollectShiftDataPipeline(
             _report.NewShiftCodes += cropper.NewShiftCodes.Count;
         }
         
-        
         // check if shift exists, save if not exist or different!
         List<Shift> newShifts = [];
         foreach (var shift in cropper.Shifts)
@@ -118,8 +150,7 @@ public class CollectShiftDataPipeline(
             newShifts.Add(shift);
         }
 
-        // save if updated shift
-        if (newShifts.Count > 0) await dataServiceRegistry.ShiftDataService.AddRangeAsync(newShifts);
+        return newShifts;
     }
 
     /// <summary>
@@ -162,5 +193,37 @@ public class CollectShiftDataPipeline(
 
         // return null at this point
         return null;
+    }
+
+    private void PrintWeeklyReport()
+    {
+        if (_report.NewEmployees > 0)
+            AppLogger.LogAdd($"New employees: {_report.NewEmployees}");
+        if (_report.NewWorkdays > 0)
+            AppLogger.LogAdd($"New Workdays: {_report.NewWorkdays}");
+        if (_report.NewShiftCodes > 0)
+            AppLogger.LogAdd($"New ShiftCodes: {_report.NewShiftCodes}");
+        if (_report.NewShifts > 0)
+            AppLogger.LogAdd($"New shifts: {_report.NewShifts}");
+        if (_report.UpdatedShifts > 0)
+            AppLogger.LogAdd($"UpdatedShifts: {_report.UpdatedShifts}");
+        
+        _report.Clear();
+    }
+
+    private void PrintFullWeeklyReport()
+    {
+        AppLogger.LogInfo("All new data added:");
+        if (_report.AllNewEmployees > 0) 
+            AppLogger.LogAdd($"New employees: {_report.AllNewEmployees}");
+        if (_report.AllNewWorkdays > 0)
+            AppLogger.LogAdd($"New Workdays: {_report.AllNewWorkdays}");
+        if (_report.AllNewShiftCodes > 0)
+            AppLogger.LogAdd($"New ShiftCodes: {_report.AllNewShiftCodes}");
+        if (_report.AllNewShifts > 0)
+            AppLogger.LogAdd($"New Shifts: {_report.AllNewShifts}");
+        if (_report.UpdatedShifts > 0)
+            AppLogger.LogAdd($"UpdatedShifts: {_report.UpdatedShifts}");
+            
     }
 }

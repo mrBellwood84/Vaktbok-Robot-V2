@@ -17,6 +17,7 @@ public static class DbServicesExtension
         services.AddScoped<IBaseDbService<ShiftRemark>, ShiftRemarkDbService>();
         services.AddScoped<IBaseDbService<Workday>, WorkdayDbService>();
         services.AddScoped<IBaseDbService<Shift>, ShiftDbService>();
+        services.AddScoped<IBaseDbService<FilePath>, FilePathDbService>();
         return services;
     }
 }

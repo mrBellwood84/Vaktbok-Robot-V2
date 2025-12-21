@@ -1,10 +1,11 @@
 ﻿using Domain.Settings;
 using Microsoft.Playwright;
 using WebHarvester.Harvest.Exceptions;
+using WebHarvester.Harvest.Interfaces;
 
 namespace WebHarvester.Harvest;
 
-public class BaseBot(BrowserSettings settings)
+public class BaseBot(BrowserSettings settings) : IBaseBot
 {
     public IPage Page { get; set; } = null!;
     
@@ -12,7 +13,7 @@ public class BaseBot(BrowserSettings settings)
     /// <summary>
     /// Go to url 
     /// </summary>
-    protected async Task GotoAsync(string url)
+    public async Task GotoAsync(string url)
     {
         Check_page_exists();
         
@@ -20,7 +21,8 @@ public class BaseBot(BrowserSettings settings)
         {
             await Page.GotoAsync(url, new PageGotoOptions()
             {
-                Timeout = settings.PageLoadTimeout
+                Timeout = settings.PageLoadTimeout,
+                WaitUntil = WaitUntilState.Load
             });
         }
         catch (TimeoutException e)

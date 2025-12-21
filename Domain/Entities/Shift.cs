@@ -8,6 +8,7 @@ namespace Domain.Entities
         private Guid _workdayGuid;
         private Guid _shiftCodeGuid;
         private Guid _shiftRemarkGuid;
+        private Guid _filePathGuid;
         
         public byte[] IdBinary { get; set; }
         
@@ -15,6 +16,7 @@ namespace Domain.Entities
         public byte[] WorkdayIdBinary { get; init; }
         public byte[] ShiftCodeIdBinary { get; init; }
         public byte[] ShiftRemarkIdBinary { get; set; }
+        public byte[] FilePathIdBinary { get; set; }
 
         public Guid EmployeeGuid
         {
@@ -53,6 +55,16 @@ namespace Domain.Entities
                 if (_shiftRemarkGuid != Guid.Empty) return _shiftRemarkGuid;
                 _shiftRemarkGuid = new Guid(ShiftRemarkIdBinary);
                 return _shiftRemarkGuid;
+            }
+        }
+
+        public Guid FilePathGuid
+        {
+            get
+            {
+                if (_filePathGuid != Guid.Empty) return _filePathGuid;
+                _filePathGuid = new Guid(FilePathIdBinary);
+                return _filePathGuid;
             }
         }
 

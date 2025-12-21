@@ -31,12 +31,20 @@ CREATE TABLE IF NOT EXISTS Workday (
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS FilePath (
+    IdBinary BINARY(16) PRIMARY KEY,
+    Path VARCHAR(100),
+    
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);  
+
 CREATE TABLE IF NOT EXISTS Shift(
 	IdBinary BINARY(16) PRIMARY KEY,
     EmployeeIdBinary BINARY(16) NOT NULL,
     WorkdayIdBinary BINARY(16) NOT NULL,
     ShiftCodeIdBinary BINARY(16),
     ShiftRemarkIdBinary Binary(16),
+    FilePathIdBinary Binary(16),
     
     Time VARCHAR(15),
     
@@ -47,6 +55,8 @@ CREATE TABLE IF NOT EXISTS Shift(
     FOREIGN KEY (ShiftCodeIdBinary) REFERENCES ShiftCode(IdBinary)
         ON DELETE RESTRICT,
     FOREIGN KEY (ShiftRemarkIdBinary) REFERENCES ShiftRemark(IdBinary)
+        ON DELETE RESTRICT,
+    FOREIGN KEY (FilePathIdBinary) REFERENCES FilePath(IdBinary)
         ON DELETE RESTRICT,
     
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP

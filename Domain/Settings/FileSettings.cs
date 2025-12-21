@@ -2,6 +2,6 @@
 {
     public class FileSettings
     {
-        public string RootDirectory { get; init; }
+        public string DocumentDirectory { get; init; }
     }
 }

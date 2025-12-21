@@ -18,6 +18,9 @@ public static class ScraperExtension
         // add bots
         services.AddTransient<ILoginBot, LoginBot>();
         services.AddTransient<IShiftBookWeeksBot, ShiftBookWeeksBot>();
+        
+        // also adding base bot for direct action
+        services.AddTransient<IBaseBot, BaseBot>();
 
         return services;
     }
