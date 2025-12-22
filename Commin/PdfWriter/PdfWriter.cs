@@ -14,21 +14,31 @@ public static class PdfWriter
         var directory = Path.GetDirectoryName(filepath);
         Directory.CreateDirectory(directory!);
         
-        // get document size in px and convert to inces
-        var queryHeight = @"document.documentElement.scrollHeight";
-        var queryWidth = @"document.documentElement.scrollWidth";
-        var heightPx = await page.EvaluateAsync<float>(queryHeight);
-        var widthPx = await page.EvaluateAsync<float>(queryWidth);
-        // get document size in inches, 96 DPI
-        var heightCm = (heightPx / 96.0 * 2.54).ToString(CultureInfo.InvariantCulture);
-        var widthCm = (widthPx / 96.0 * 2.54).ToString(CultureInfo.InvariantCulture);
+        // set css to screen view
+        await page.EmulateMediaAsync(new PageEmulateMediaOptions
+        {
+            Media = Media.Screen,
+        });
         
+        await page.EvaluateAsync(@"
+            (() => {
+              const els = document.querySelectorAll('*');
+              for (const el of els) {
+                el.style.overflow = 'visible';
+                el.style.maxHeight = 'none';
+                if (el.style.height === '100%' || el.style.height === '100vh') {
+                  el.style.height = 'auto';
+                }
+              }
+            })();
+            ");
+
         var options = new PagePdfOptions
         {
             Path = filepath,
-            Height = $"{heightCm}cm",
-            Width = $"{widthCm}cm",
-            PrintBackground = true
+            PrintBackground = true,
+            Format = "A2",
+            Landscape = true
         };
         
         await page.PdfAsync(options);
