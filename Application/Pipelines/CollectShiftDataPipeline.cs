@@ -178,7 +178,7 @@ public class CollectShiftDataPipeline(
         }
 
         // return shift if shiftcode is different
-        if (exist.ShiftCodeGuid != shift.Guid)
+        if (exist.ShiftCodeGuid != shift.ShiftCodeGuid)
         {
             _report.UpdatedShifts++;
             return shift;

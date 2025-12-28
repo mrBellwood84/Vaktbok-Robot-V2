@@ -51,10 +51,6 @@ namespace WebHarvester.Cropper
                     ShiftCodeGuid = shiftCode.Guid,
                     Time = shiftTime,
                 };
-                
-                AppLogger.LogDev($" E GUID: {employee.Id} | {shift.EmployeeId}");
-                AppLogger.LogDev($"WD GUID: {workday.Id} | {shift.WorkdayId}");
-                AppLogger.LogDev($"SC GUID: {shiftCode.Id} | {shift.ShiftCodeId}");
 
                 Shifts.Add(shift);
             }
@@ -92,18 +88,10 @@ namespace WebHarvester.Cropper
         private Workday CropWorkday(SourceShiftEntry entry)
         {
             var exists = workdays.Where(x => x.Date == entry.ShiftDate).FirstOrDefault();
-            if (exists != null)
-            {
-                AppLogger.LogDev($"Workdata found in db data!");
-                return exists;
-            }
+            if (exists != null) return exists;
 
             var inNew = NewWorkdays.Where(x => x.Date == entry.ShiftDate).FirstOrDefault();
-            if (inNew != null)
-            {
-                AppLogger.LogDev("Workdata found among new workdays!");
-                return inNew;
-            }
+            if (inNew != null) return inNew;
 
             var newWorkday = new Workday
             {
@@ -113,8 +101,6 @@ namespace WebHarvester.Cropper
                 Year = (short)entry.Year,
                 Date = entry.ShiftDate,
             };
-            
-            AppLogger.LogDev("New Workdata item collected!");
             
             NewWorkdays.Add(newWorkday);
             return newWorkday;
