@@ -8,12 +8,12 @@ namespace Persistence.DbServices.Services
         public ShiftCodeDbService(ConnectionStrings connectionStrings) : base(connectionStrings)
         {
             QueryAll = "SELECT * FROM ShiftCode;";
-            QueryByIdBinary = @"
+            QueryById = @"
                 SELECT * FROM ShiftCode
-                WHERE IdBinary = @IdBinary;";
+                WHERE Id = @Id;";
             Insert = @"
-                INSERT INTO ShiftCode (IdBinary, Code)
-                VALUES (@IdBinary, @Code);";
+                INSERT INTO ShiftCode (Id, Code)
+                VALUES (@Id, @Code);";
         }
     }
 }

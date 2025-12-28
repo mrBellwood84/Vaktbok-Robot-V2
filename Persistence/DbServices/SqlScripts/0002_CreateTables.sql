@@ -1,28 +1,28 @@
 USE Vaktbok_2;
 
 CREATE TABLE IF NOT EXISTS Employee(
-	IdBinary BINARY(16) PRIMARY KEY,
+	Id VARCHAR(36) PRIMARY KEY,
 	Name VARCHAR(100) NOT NULL,
     
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS ShiftCode(
-	IdBinary BINARY(16) PRIMARY KEY,
+    Id VARCHAR(36) PRIMARY KEY,
     Code VARCHAR(10) NOT NULL,
     
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS ShiftRemark(
-	IdBinary BINARY(16) PRIMARY KEY,
+    Id VARCHAR(36) PRIMARY KEY,
     Remark VARCHAR(10) NOT NULL,
     
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS Workday (
-	IdBinary BINARY(16) PRIMARY KEY,
+    Id VARCHAR(36) PRIMARY KEY,
     Day SMALLINT NOT NULL,
     Week SMALLINT NOT NULL,
     Year SMALLINT NOT NULL,
@@ -32,31 +32,31 @@ CREATE TABLE IF NOT EXISTS Workday (
 );
 
 CREATE TABLE IF NOT EXISTS FilePath (
-    IdBinary BINARY(16) PRIMARY KEY,
-    Path VARCHAR(100),
+    Id VARCHAR(36) PRIMARY KEY,
+    Path VARCHAR(100),  
     
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);  
+);      
 
 CREATE TABLE IF NOT EXISTS Shift(
-	IdBinary BINARY(16) PRIMARY KEY,
-    EmployeeIdBinary BINARY(16) NOT NULL,
-    WorkdayIdBinary BINARY(16) NOT NULL,
-    ShiftCodeIdBinary BINARY(16),
-    ShiftRemarkIdBinary Binary(16),
-    FilePathIdBinary Binary(16),
+    Id VARCHAR(36) PRIMARY KEY,
+    EmployeeId VARCHAR(36) NOT NULL,
+    WorkdayId VARCHAR(36) NOT NULL,
+    ShiftCodeId VARCHAR(36),
+    ShiftRemarkId VARCHAR(36),
+    FilePathId VARCHAR(36),
     
     Time VARCHAR(15),
     
-    FOREIGN KEY (EmployeeIdBinary) REFERENCES Employee(IdBinary)
+    FOREIGN KEY (EmployeeId) REFERENCES Employee(Id)
 		ON DELETE CASCADE,
-    FOREIGN KEY (WorkdayIdBinary) REFERENCES Workday(IdBinary)
+    FOREIGN KEY (WorkdayId) REFERENCES Workday(Id)
         ON DELETE RESTRICT,
-    FOREIGN KEY (ShiftCodeIdBinary) REFERENCES ShiftCode(IdBinary)
+    FOREIGN KEY (ShiftCodeId) REFERENCES ShiftCode(Id)
         ON DELETE RESTRICT,
-    FOREIGN KEY (ShiftRemarkIdBinary) REFERENCES ShiftRemark(IdBinary)
+    FOREIGN KEY (ShiftRemarkId) REFERENCES ShiftRemark(Id)
         ON DELETE RESTRICT,
-    FOREIGN KEY (FilePathIdBinary) REFERENCES FilePath(IdBinary)
+    FOREIGN KEY (FilePathId) REFERENCES FilePath(Id)
         ON DELETE RESTRICT,
     
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -2,16 +2,21 @@ using Domain.Interfaces;
 
 namespace Domain.Entities;
 
-public class FilePath : IHasIdBinary
+public class FilePath : IHasGuid
 {
-    public byte[] IdBinary { get; set; }
-    public string Path { get; set; }
-
-    public Guid Id
+    private Guid _guid;
+    
+    public string Id
     {
-        get => new  Guid(IdBinary);
-        set => IdBinary = value.ToByteArray();
+        get => _guid.ToString(); 
+        set => _guid = Guid.Parse(value); 
+    }
+    public Guid Guid
+    {
+        get => _guid; 
+        set => _guid = value;
     }
     
+    public string Path { get; set; }
     public DateTime CreatedAt  { get; set; }
 }

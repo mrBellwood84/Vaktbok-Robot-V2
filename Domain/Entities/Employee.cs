@@ -1,16 +1,22 @@
 ﻿using Domain.Interfaces;
 
-namespace Domain.Entities
-{
-    public class Employee : IHasIdBinary
-    {
-        public byte[] IdBinary { get; set; }
-        public string Name { get; set; }
+namespace Domain.Entities;
 
-        public Guid Id         {
-            get => new Guid(IdBinary);
-            set => IdBinary = value.ToByteArray();
-        }
-        public DateTime CreatedAt { get; set; }
+public class Employee : IHasGuid
+{
+    private Guid _guid;
+    
+    public string Id
+    {
+        get => _guid.ToString(); 
+        set => _guid = Guid.Parse(value); 
     }
+    public Guid Guid
+    {
+        get => _guid; 
+        set => _guid = value;
+    }
+    
+    public string Name { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

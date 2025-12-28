@@ -9,12 +9,12 @@ public class EmployeeDbService : BaseDbService<Employee>
         : base(connectionStrings)
     {
         QueryAll = "SELECT * FROM Employee;";
-        QueryByIdBinary = @"
+        QueryById = @"
             SELECT * FROM Employee
-            WHERE IdBinary = @IdBinary;";
-
+            WHERE Id = @Id;";
+    
         Insert = @"
-            INSERT INTO Employee (IdBinary, Name)
-            VALUES (@IdBinary, @Name);";
+            INSERT INTO Employee (Id, Name)
+            VALUES (@Id, @Name);";
     }
 }

@@ -10,7 +10,7 @@ public class FilePathDbService : BaseDbService<FilePath>
     {
         QueryAll = @"SELECT * FROM FilePath";
         Insert = @"
-            INSERT INTO FilePath (IdBinary, Path)
-            VALUES (@IdBinary, @Path)";
+            INSERT INTO FilePath (Id, Path)
+            VALUES (@Id, @Path)";
     }
 }

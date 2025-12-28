@@ -17,7 +17,7 @@ public class BaseDbService<TModel>(ConnectionStrings connectionStrings)
     /// <summary>
     /// Gets the SQL query used to retrieve an entity by its binary identifier.
     /// </summary>
-    internal string QueryByIdBinary { get; init; }
+    internal string QueryById { get; init; }
     /// <summary>
     /// Command for inserting
     /// </summary>
@@ -38,12 +38,11 @@ public class BaseDbService<TModel>(ConnectionStrings connectionStrings)
         var data = await connection.QueryAsync<TModel>(QueryAll);
         return data.ToList();
     }
-    public async Task<TModel> GetByIdBinaryAsync(byte[] id)
+
+    public async Task<TModel> GetByIdAsync(Guid id)
     {
-        if (string.IsNullOrEmpty(QueryByIdBinary))
-            throw new NotSupportedException("QueryByIdBinary can not be null or empty.");
         await using var connection = await CreateConnectionAsync();
-        var data = await connection.QuerySingleOrDefaultAsync<TModel>(QueryByIdBinary, new { IdBinary = id });
+        var data = await connection.QuerySingleOrDefaultAsync<TModel>(QueryById, new { Id = id });
         return data;
     }
 

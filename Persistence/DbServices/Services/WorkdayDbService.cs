@@ -9,13 +9,13 @@ namespace Persistence.DbServices.Services
             : base(connectionStrings)
         {
             QueryAll = "SELECT * FROM Workday;";
-            QueryByIdBinary = @"
+            QueryById = @"
                 SELECT * FROM Workday
-                WHERE IdBinary = @IdBinary;";
+                WHERE Id = @Id;";
 
             Insert = @"
-                INSERT INTO Workday (IdBinary, Day, Week, Year, Date)
-                VALUES (@IdBinary, @Day, @Week, @Year, @Date);";
+                INSERT INTO Workday (Id, Day, Week, Year, Date)
+                VALUES (@Id, @Day, @Week, @Year, @Date);";
         }
     }
 }

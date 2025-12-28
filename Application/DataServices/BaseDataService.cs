@@ -7,12 +7,12 @@ namespace Application.DataServices
 {
     public class BaseDataService<TModel>(
         IBaseCacheService<TModel> cacheService,
-        IBaseDbService<TModel> dbService) : IBaseDataService<TModel> where TModel : IHasIdBinary
+        IBaseDbService<TModel> dbService) : IBaseDataService<TModel> where TModel : IHasGuid
     {
         /// <summary>
         /// Gets the collection of data items currently held in the cache.
         /// </summary>
-        public List<TModel> Data { get => cacheService.Items; }
+        public List<TModel> Data => cacheService.Items;
 
         /// <summary>
         /// Asynchronously adds a single model to the data store and optionally updates the cache with the newly added
@@ -24,7 +24,7 @@ namespace Application.DataServices
         public async Task<TModel> AddSingleAsync(TModel model)
         {
             await dbService.CreateAsync(model);
-            var data = await dbService.GetByIdBinaryAsync(model.IdBinary);
+            var data = await dbService.GetByIdAsync(model.Guid);
             cacheService.AddSingleItem(data);
             return data;
         }

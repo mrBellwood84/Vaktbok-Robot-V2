@@ -1,24 +1,26 @@
 ﻿using Domain.Interfaces;
 
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public class Workday : IHasGuid
 {
-    public class Workday : IHasIdBinary
+    private Guid _guid;
+    
+    public string Id
     {
-        public byte[] IdBinary { get; set; }
-        public short Day { get; set; }
-        public short Week { get; set; }
-        public short Year { get; set; }
-        public DateTime Date { get; set; }
-
-        public Guid Id
-        {
-            get => new Guid(IdBinary);
-            set => IdBinary = value.ToByteArray();
-        }
-        public DateTime CreatedAt { get; set; }
-
-        public string Key => Date.ToString("yyyyMMdd");
+        get => _guid.ToString(); 
+        set => _guid = Guid.Parse(value); 
     }
-
-
+    public Guid Guid
+    {
+        get => _guid; 
+        set => _guid = value;
+    }
+    
+    public short Day { get; set; }
+    public short Week { get; set; }
+    public short Year { get; set; }
+    public DateTime Date { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
+

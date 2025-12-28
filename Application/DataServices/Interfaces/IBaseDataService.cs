@@ -2,7 +2,7 @@
 
 namespace Application.DataServices.Interfaces
 {
-    public interface IBaseDataService<TModel> where TModel : IHasIdBinary
+    public interface IBaseDataService<TModel> where TModel : IHasGuid
     {
         List<TModel> Data { get; }
 

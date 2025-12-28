@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.SourceModels;
 using System.Text.RegularExpressions;
+using Common.Logging;
 
 namespace WebHarvester.Cropper
 {
@@ -17,9 +18,9 @@ namespace WebHarvester.Cropper
         private readonly string _singleTimePattern = @"\d{2}:\d{2}";
 
         public Employee NewEmployee { get; private set; }
-        public List<Workday> NewWorkdays { get; private set; } = [];
-        public List<ShiftCode> NewShiftCodes { get; private set; } = [];
-        public List<Shift> Shifts { get; private set; } = [];
+        public List<Workday> NewWorkdays { get; } = [];
+        public List<ShiftCode> NewShiftCodes { get; } = [];
+        public List<Shift> Shifts { get; } = [];
 
         /// <summary>
         /// Processes raw shift data and populates the collection of shifts for the current employee.
@@ -39,17 +40,21 @@ namespace WebHarvester.Cropper
             foreach (var rawShift in rawData.Shifts)
             {
                 var workday = CropWorkday(rawShift);
-                var shiftCode = CropShiftcode(rawShift);
+                var shiftCode = CropShiftCode(rawShift);
                 var shiftTime = CropShiftTime(rawShift);
 
                 var shift = new Shift
                 {
-                    IdBinary = Guid.NewGuid().ToByteArray(),
-                    EmployeeIdBinary = employee.IdBinary,
-                    WorkdayIdBinary = workday.IdBinary,
-                    ShiftCodeIdBinary = shiftCode.IdBinary,
-                    Time = shiftTime
+                    Guid = Guid.NewGuid(),
+                    EmployeeGuid = employee.Guid,
+                    WorkdayGuid = workday.Guid,
+                    ShiftCodeGuid = shiftCode.Guid,
+                    Time = shiftTime,
                 };
+                
+                AppLogger.LogDev($" E GUID: {employee.Id} | {shift.EmployeeId}");
+                AppLogger.LogDev($"WD GUID: {workday.Id} | {shift.WorkdayId}");
+                AppLogger.LogDev($"SC GUID: {shiftCode.Id} | {shift.ShiftCodeId}");
 
                 Shifts.Add(shift);
             }
@@ -68,7 +73,7 @@ namespace WebHarvester.Cropper
 
             NewEmployee = new Employee
             {
-                IdBinary = Guid.NewGuid().ToByteArray(),
+                Guid = Guid.NewGuid(),
                 Name = rawData.EmployeeName,
             };
 
@@ -87,19 +92,30 @@ namespace WebHarvester.Cropper
         private Workday CropWorkday(SourceShiftEntry entry)
         {
             var exists = workdays.Where(x => x.Date == entry.ShiftDate).FirstOrDefault();
-            if (exists != null) return exists;
+            if (exists != null)
+            {
+                AppLogger.LogDev($"Workdata found in db data!");
+                return exists;
+            }
 
-            var inNew = NewWorkdays.Where(x => x.Date != entry.ShiftDate).FirstOrDefault();
-            if (inNew != null) return inNew;
+            var inNew = NewWorkdays.Where(x => x.Date == entry.ShiftDate).FirstOrDefault();
+            if (inNew != null)
+            {
+                AppLogger.LogDev("Workdata found among new workdays!");
+                return inNew;
+            }
 
             var newWorkday = new Workday
             {
-                IdBinary = Guid.NewGuid().ToByteArray(),
+                Guid = Guid.NewGuid(),
                 Day = (short)entry.Day,
                 Week = (short)entry.WeekNumber,
                 Year = (short)entry.Year,
                 Date = entry.ShiftDate,
             };
+            
+            AppLogger.LogDev("New Workdata item collected!");
+            
             NewWorkdays.Add(newWorkday);
             return newWorkday;
         }
@@ -111,7 +127,7 @@ namespace WebHarvester.Cropper
         /// <param name="entry">The source shift entry from which to extract the shift code. Cannot be null.</param>
         /// <returns>A <see cref="ShiftCode"/> instance representing the extracted shift code. If a matching code already exists,
         /// that instance is returned; otherwise, a new instance is created and returned.</returns>
-        private ShiftCode CropShiftcode(SourceShiftEntry entry)
+        private ShiftCode CropShiftCode(SourceShiftEntry entry)
         {
             var regex = new Regex(_shiftCodePattern);
             var match = regex.Match(entry.CellContent);
@@ -126,8 +142,8 @@ namespace WebHarvester.Cropper
 
             var newShiftCode = new ShiftCode
             {
-                IdBinary = Guid.NewGuid().ToByteArray(),
-                Code = code,
+                Guid = Guid.NewGuid(),
+                Code = code
             };
 
             NewShiftCodes.Add(newShiftCode);
@@ -168,7 +184,7 @@ namespace WebHarvester.Cropper
                 var singleTimeRegex = new Regex(_singleTimePattern);
                 var singleTimeMatches = singleTimeRegex.Matches(data);
                 var first = singleTimeMatches[0].Groups[0].Value.Trim();
-                var last = singleTimeMatches[singleTimeMatches.Count - 1].Groups[0].Value.Trim();
+                var last = singleTimeMatches[^1].Groups[0].Value.Trim();
                 return $"{first} - {last}";
             }
 

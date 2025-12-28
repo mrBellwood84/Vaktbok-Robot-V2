@@ -9,13 +9,13 @@ namespace Persistence.DbServices.Services
             : base(connectionStrings)
         {
             QueryAll = "SELECT * FROM ShiftRemark;";
-            QueryByIdBinary = @"
+            QueryById = @"
                 SELECT * FROM ShiftRemark
-                WHERE IdBinary = @IdBinary;";
+                WHERE Id = @Id;";
 
             Insert = @"
-                INSERT INTO ShiftRemark (IdBinary, Remark)
-                VALUES (@IdBinary, @Remark);";
+                INSERT INTO ShiftRemark (Id, Remark)
+                VALUES (@Id, @Remark);";
         }
     }
 }

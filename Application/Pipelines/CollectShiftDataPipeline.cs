@@ -62,7 +62,7 @@ public class CollectShiftDataPipeline(
 
                 if (shifts.Count > 0)
                 {
-                    // save page as pdf
+                    // save page as PDF
                     var filePath = await PdfWriter.WorkbookWeeklyToFile(
                         shiftBookWeeksBot.Page,
                         shiftBookWeeksBot.CurrentWeekNumber.ToString(),
@@ -71,14 +71,14 @@ public class CollectShiftDataPipeline(
                     // create and store filepath
                     var filePathEntity = new FilePath
                     {
-                        IdBinary = Guid.NewGuid().ToByteArray(),
+                        Guid = Guid.NewGuid(),
                         Path = filePath
                     };
                     await filepathDbService.CreateAsync(filePathEntity);
                     
                     // add filepath id to models
                     foreach (var item in shifts)
-                        item.FilePathIdBinary = filePathEntity.IdBinary;
+                        item.FilePathGuid = filePathEntity.Guid;
                     
                     // save models to database
                     await dataServiceRegistry.ShiftDataService.AddRangeAsync(shifts);
@@ -178,7 +178,7 @@ public class CollectShiftDataPipeline(
         }
 
         // return shift if shiftcode is different
-        if (exist.ShiftCodeGuid != shift.ShiftCodeGuid)
+        if (exist.ShiftCodeGuid != shift.Guid)
         {
             _report.UpdatedShifts++;
             return shift;

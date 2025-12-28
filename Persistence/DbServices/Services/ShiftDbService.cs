@@ -9,13 +9,13 @@ namespace Persistence.DbServices.Services
             : base(connectionStrings)
         {
             QueryAll = "SELECT * FROM Shift;";
-            QueryByIdBinary = @"
+            QueryById = @"
                 SELECT * FROM Shift
-                WHERE IdBinary = @IdBinary;";
+                WHERE Id = @Id;";
 
             Insert = @"
-                INSERT INTO Shift (IdBinary, EmployeeIdBinary, WorkdayIdBinary, ShiftCodeIdBinary, ShiftRemarkIdBinary, FilePathIdBinary, Time)
-                VALUES (@IdBinary, @EmployeeIdBinary, @WorkdayIdBinary, @ShiftCodeIdBinary, @ShiftRemarkIdBinary, @FilePathIdBinary, @Time);";
+                INSERT INTO Shift (Id, EmployeeId, WorkdayId, ShiftCodeId, FilePathId, Time)
+                VALUES (@Id, @EmployeeId, @WorkdayId, @ShiftCodeId, @FilePathId, @Time);";
         }
     }
 }

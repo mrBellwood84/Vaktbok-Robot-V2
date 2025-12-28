@@ -1,17 +1,21 @@
 ﻿using Domain.Interfaces;
 
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public class ShiftRemark : IHasGuid
 {
-    public class ShiftRemark : IHasIdBinary
+    private Guid _guid;
+    
+    public string Id
     {
-        public byte[] IdBinary { get; set; }
-        public string Remark { get; set; }
-     
-        public Guid Id
-        {
-            get => new Guid(IdBinary);
-            set => IdBinary = value.ToByteArray();
-        }
-        public DateTime CreatedAt { get; set; }
+        get => _guid.ToString(); 
+        set => _guid = Guid.Parse(value); 
     }
+    public Guid Guid
+    {
+        get => _guid; 
+        set => _guid = value;
+    }
+    public string Remark { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
