@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Globalization;
-using Common.Logging;
-using Domain.Settings;
 using Microsoft.Playwright;
 
 namespace Common.PdfWriter;
@@ -47,7 +43,7 @@ public static class PdfWriter
     public static async Task<string> WorkbookWeeklyToFile(IPage page, string week_n, string reportFolder)
     {
         var now = DateTime.Now.ToString("yyyyMMdd_HHmm");
-        var fileName = $"{now}-{week_n}.pdf";
+        var fileName = $"{now}__{week_n}.pdf";
         var fileDir = Path.Join(reportFolder, "week", week_n);
         var filePath = Path.Join(fileDir, fileName);
         

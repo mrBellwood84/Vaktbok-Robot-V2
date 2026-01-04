@@ -9,6 +9,7 @@ public interface IShiftBookWeeksBot
     int CurrentWeekNumber { get; set; }
     Task<bool> CheckEndpointReached();
     Task ClickNextWeek();
+    Task ClickOrderTableByName();
     Task<List<SourceEmployeeWeek>> CollectWeekData();
     Task GotoShiftBookWeeks();
     Task NavigateToStartPoint();

@@ -18,6 +18,7 @@ public class ShiftBookWeeksBot(
     private const string WeekInfoContainerXPath = "//span[contains(text(), \"Uke\")]";
     private const string NextWeekButtonXPath = "(//div[@role=\"button\"])[2]";
 
+    private const string NameColumnHeaderXPath = "(//td[@role='columnheader'])[1]";
     private const string HeaderRowXPath = "(//table)[7]//tr[1]/td";
     private const string TableRowsXPath = "(//table)[8]/tbody/tr";
 
@@ -71,6 +72,15 @@ public class ShiftBookWeeksBot(
             var onWeekNumber = await ClickToStartWeekNumber();
             if (onWeekNumber) return;
         }
+    }
+
+    /// <summary>
+    /// Clicks the order table's name column header asynchronously. 
+    /// </summary>
+    /// <returns>A task that represents the asynchronous click operation.</returns>
+    public async Task ClickOrderTableByName()
+    {
+        await ClickAsync(NameColumnHeaderXPath);
     }
 
     /// <summary>

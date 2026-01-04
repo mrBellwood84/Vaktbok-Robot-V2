@@ -20,6 +20,7 @@ Denne scraperen roboten er designet opp mot de interne nettsidene i Helse Bergen
 ## `appsettings.secret.json`
 
 Vaktbok Robot V2 krever en **hemmelig settings-fil** som inneholder sensitive opplysninger som brukernavn og passord.
+Connection strings og filbaner for dokumentlagring er også inkludert her. 
 
 - `IHelseUser`, `IHelsePassword`: for innlogging til intranettet.
 - `GatUser`, `GatPasword`:for innlogging til Gat
@@ -36,5 +37,12 @@ Vaktbok Robot V2 krever en **hemmelig settings-fil** som inneholder sensitive op
   "Urls": {
     "Entry": "",
     "LoginSleep": ""
+  }
+    "ConnectionStrings": {
+    "Root": "Server=localhost;Database=Vaktbok_2;Uid=root;Pwd=root;",
+    "Robot": "Server=localhost;Database=Vaktbok_2;Uid=robot_user;Pwd=robot_user_password;"
+  },
+  "FileSettings": {
+    "DocumentDirectory": "path/to/documents"
   }
 }

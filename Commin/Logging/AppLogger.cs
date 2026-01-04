@@ -1,5 +1,4 @@
 ﻿namespace Common.Logging;
-
 public static class AppLogger
 {
     private static readonly string[] _logPrefixes = [

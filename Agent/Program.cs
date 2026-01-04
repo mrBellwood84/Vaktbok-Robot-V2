@@ -21,4 +21,5 @@ await startup.InitializeInfrastructure(provider);
 var loginPipeline = provider.GetRequiredService<LoginPipeline>();
 var collectorPipeline = provider.GetRequiredService<CollectShiftDataPipeline>();
 
+// await loginPipeline.RunLoginSession();
 await collectorPipeline.RunPipelineAsync();

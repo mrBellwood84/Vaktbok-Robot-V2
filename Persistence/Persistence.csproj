@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="DbServices\SqlScripts\0002_CreateTables.sql" />
+	<EmbeddedResource Include="DbServices\SqlScripts\0003_CreateProcedure.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,11 +22,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Commin\Common.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="DbServices\SqlScripts\0003_CreateProcedure.sql" />
-    <EmbeddedResource Include="DbServices\SqlScripts\0003_CreateProcedure.sql" />
   </ItemGroup>
 
 </Project>

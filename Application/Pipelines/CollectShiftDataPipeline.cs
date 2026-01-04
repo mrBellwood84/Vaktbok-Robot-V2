@@ -47,6 +47,9 @@ public class CollectShiftDataPipeline(
             // loop through weeks and collect data
             while (true)
             {
+                // order names in table
+                await shiftBookWeeksBot.ClickOrderTableByName();
+
                 // collection of new shifts
                 List<Shift> shifts = [];
                 
@@ -162,7 +165,7 @@ public class CollectShiftDataPipeline(
     /// shift.</remarks>
     /// <param name="shift">The shift to check for existence. Must specify employee, workday, shift code, and start and end times.</param>
     /// <returns>The original shift if no matching shift exists; otherwise, null if an equivalent shift is found.</returns>
-    private Shift? CheckShiftExists(Shift shift)
+    private Shift CheckShiftExists(Shift shift)
     {
         // linq query shift on employee and workdate, get latest
         var exist = dataServiceRegistry.ShiftDataService.Data
