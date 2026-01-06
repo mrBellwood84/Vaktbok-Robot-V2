@@ -226,7 +226,7 @@ public class CollectShiftDataPipeline(
         if (_report.AllNewShifts > 0)
             AppLogger.LogAdd($"New Shifts: {_report.AllNewShifts}");
         if (_report.UpdatedShifts > 0)
-            AppLogger.LogAdd($"UpdatedShifts: {_report.UpdatedShifts}");
+            AppLogger.LogAdd($"UpdatedShifts: {_report.AllUpdatedShifts}");
             
     }
 }
