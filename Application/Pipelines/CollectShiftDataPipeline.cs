@@ -15,7 +15,9 @@ public class CollectShiftDataPipeline(
     IBrowserHost  browserHost, 
     ILoginBot loginBot,
     IShiftBookWeeksBot shiftBookWeeksBot,
+    IShiftBookDailyBot shiftBookDailyBot,
     IDataServiceRegistry dataServiceRegistry,
+    IShiftNoRemarkDataService noRemarkDataService,
     IBaseDbService<FilePath> filepathDbService,
     FileSettings fileSettings)
 {
@@ -30,6 +32,7 @@ public class CollectShiftDataPipeline(
             await browserHost.StartBrowserSession();
             loginBot.Page = browserHost.Page;
             shiftBookWeeksBot.Page = browserHost.Page;
+            shiftBookDailyBot.Page = browserHost.Page;
 
             // run login procedure
             await loginBot.RunLoginProcedureAsync();
@@ -44,59 +47,12 @@ public class CollectShiftDataPipeline(
             Console.ReadKey();
             Console.Clear();
 
-            // loop through weeks and collect data
-            while (true)
-            {
-                // order names in table
-                await shiftBookWeeksBot.ClickOrderTableByName();
+            // collect weekly data
+            await CollectWeeklyData();
 
-                // collection of new shifts
-                List<Shift> shifts = [];
-                
-                // collect week data
-                var weekData = await shiftBookWeeksBot.CollectWeekData();
-                AppLogger.LogInfo($"Week data collected for week: {shiftBookWeeksBot.CurrentWeekNumber}");
+            // get remark data for missing remarks
+            await ResolveRemarks();
 
-                foreach (var data in weekData)
-                {
-                    var newShifts = await ParseEmployeeWeekly(data);
-                    shifts.AddRange(newShifts);
-                }
-
-                if (shifts.Count > 0)
-                {
-                    // save page as PDF
-                    var filePath = await PdfWriter.WorkbookWeeklyToFile(
-                        shiftBookWeeksBot.Page,
-                        shiftBookWeeksBot.CurrentWeekNumber.ToString(),
-                        fileSettings.DocumentDirectory);
-                    
-                    // create and store filepath
-                    var filePathEntity = new FilePath
-                    {
-                        Guid = Guid.NewGuid(),
-                        Path = filePath
-                    };
-                    await filepathDbService.CreateAsync(filePathEntity);
-                    
-                    // add filepath id to models
-                    foreach (var item in shifts)
-                        item.FilePathGuid = filePathEntity.Guid;
-                    
-                    // save models to database
-                    await dataServiceRegistry.ShiftDataService.AddRangeAsync(shifts);
-                }
-                
-                
-                PrintWeeklyReport();
-                AppLogger.LogSuccess("Harvest and cropping complete!\n");
-
-                var endpointReached = await shiftBookWeeksBot.CheckEndpointReached();
-                if (endpointReached) break;
-
-                await shiftBookWeeksBot.ClickNextWeek();
-            }
-            
             PrintFullWeeklyReport();
             Console.WriteLine("DEV :: End of code this far ");
             Console.ReadLine();
@@ -104,6 +60,97 @@ public class CollectShiftDataPipeline(
         finally
         {
             await browserHost.CloseBrowserSessionAsync();
+        }
+    }
+
+    /// <summary>
+    /// Collects and processes weekly shift data by iterating through available weeks, saving relevant information to
+    /// </summary>
+    /// <remarks>This method performs multiple actions for each week, including ordering data, collecting
+    /// shift information, saving weekly data as PDF files, updating database records, and printing reports. The
+    /// operation continues until all weeks have been processed. This method should be awaited to ensure completion
+    /// before proceeding with dependent operations.</remarks>
+    /// <returns>A task that represents the asynchronous operation of collecting and storing weekly shift data.</returns>
+    private async Task CollectWeeklyData()
+    {
+        // loop through weeks and collect data
+        while (true)
+        {
+            // order names in table
+            await shiftBookWeeksBot.ClickOrderTableByName();
+
+            // collection of new shifts
+            List<Shift> shifts = [];
+
+            // collect week data
+            var weekData = await shiftBookWeeksBot.CollectWeekData();
+            AppLogger.LogInfo($"Week data collected for week: {shiftBookWeeksBot.CurrentWeekNumber}");
+
+            foreach (var data in weekData)
+            {
+                var newShifts = await ParseEmployeeWeekly(data);
+                shifts.AddRange(newShifts);
+            }
+
+            if (shifts.Count > 0)
+            {
+                // save page as PDF
+                var filePath = await PdfWriter.WorkbookWeeklyToFile(
+                    shiftBookWeeksBot.Page,
+                    shiftBookWeeksBot.CurrentWeekNumber.ToString(),
+                    fileSettings.DocumentDirectory);
+
+                // create and store filepath
+                var filePathEntity = new FilePath
+                {
+                    Guid = Guid.NewGuid(),
+                    Path = filePath
+                };
+                await filepathDbService.CreateAsync(filePathEntity);
+
+                // add filepath id to models
+                foreach (var item in shifts)
+                    item.FilePathGuid = filePathEntity.Guid;
+
+                // save models to database
+                await dataServiceRegistry.ShiftDataService.AddRangeAsync(shifts);
+            }
+
+
+            PrintWeeklyReport();
+            AppLogger.LogSuccess("Harvest and cropping complete!\n");
+
+            var endpointReached = await shiftBookWeeksBot.CheckEndpointReached();
+            if (endpointReached) break;
+
+            await shiftBookWeeksBot.ClickNextWeek();
+        }
+    }
+
+    private async Task ResolveRemarks()
+    {
+        AppLogger.LogInfo("Starting remark resolution...");
+        AppLogger.LogAdd("Loading data with missing remarks");
+        await noRemarkDataService.LoadData();
+        AppLogger.LogAdd("Navigate to page");
+        await shiftBookDailyBot.GotoShiftDaily();
+        AppLogger.LogSuccess("Starting remark collection loop");
+
+        int index = 1;
+        int lenght = noRemarkDataService.AllDates.Count;
+
+        foreach (var date in noRemarkDataService.AllDates)
+        {
+            AppLogger.LogInfo($"Processing {index++} of {lenght} - Date: {date.ToShortDateString()}");
+
+            // goto selected date and collect remark data
+            await shiftBookDailyBot.NavigateToDate(date);
+            var remarkData = await shiftBookDailyBot.GetTableData();
+
+            // get shift data with no remark for the current date
+            // iterate shifts with no remark. Get remark from collected data. If no remkark found on name set remark to blank
+            // check if remark exists in database, and get guid. Else create new remark and get guid
+            // update shift remark in database!!!
         }
     }
 
@@ -198,6 +245,13 @@ public class CollectShiftDataPipeline(
         return null;
     }
 
+    /// <summary>
+    /// Generates and logs a summary of weekly report statistics, including counts of new and updated entities, then
+    /// clears the report data.
+    /// </summary>
+    /// <remarks>This method logs only non-zero counts for each report category. After logging, the report
+    /// data is reset for the next reporting cycle. This method does not return a value and is intended for internal use
+    /// within the reporting workflow.</remarks>
     private void PrintWeeklyReport()
     {
         if (_report.NewEmployees > 0)
@@ -214,6 +268,13 @@ public class CollectShiftDataPipeline(
         _report.Clear();
     }
 
+    /// <summary>
+    /// Logs a detailed summary of all new and updated data for the current weekly report, including employees,
+    /// workdays, shift codes, and shifts.
+    /// </summary>
+    /// <remarks>This method writes informational and addition logs for each category with new or updated
+    /// entries. It is intended for internal use to provide visibility into changes made during the weekly reporting
+    /// process.</remarks>
     private void PrintFullWeeklyReport()
     {
         AppLogger.LogInfo("All new data added:");

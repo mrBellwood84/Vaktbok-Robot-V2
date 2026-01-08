@@ -24,11 +24,17 @@ var collectorPipeline = provider.GetRequiredService<CollectShiftDataPipeline>();
 
 var noshiftService = provider.GetRequiredService<IShiftNoRemarkDataService>();
 
-await loginPipeline.RunLoginSession();
-// await collectorPipeline.RunPipelineAsync();
+// await loginPipeline.RunLoginSession();
+await collectorPipeline.RunPipelineAsync();
 
 /*
 await noshiftService.LoadData();
 Console.WriteLine($"No Remark Shifts Count: {noshiftService.Data.Count}");
 Console.WriteLine($"No Remark Dates Count: {noshiftService.AllDates.Count}");
+
+foreach (var date in noshiftService.AllDates)
+{
+    Console.Write(date.ToLongDateString());
+    Console.Write($"| {date.Month}\n");
+
 */

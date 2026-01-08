@@ -9,10 +9,12 @@ public class BaseBot(BrowserSettings settings) : IBaseBot
 {
     public IPage Page { get; set; } = null!;
     
-    
     /// <summary>
-    /// Go to url 
+    /// Navigates the browser page to the specified URL and waits for the page to finish loading.
     /// </summary>
+    /// <param name="url">The URL to navigate to. Must be a valid absolute URI.</param>
+    /// <returns>A task that represents the asynchronous navigation operation.</returns>
+    /// <exception cref="BrowserPageTimeoutException">Thrown if the page fails to load within the configured timeout period.</exception>
     public async Task GotoAsync(string url)
     {
         Check_page_exists();
@@ -31,10 +33,12 @@ public class BaseBot(BrowserSettings settings) : IBaseBot
             throw new BrowserPageTimeoutException(message, e);
         }
     }
-
     /// <summary>
-    /// Preform mouse click on element when founc
+    /// Attempts to locate and click the element identified by the specified XPath expression asynchronously.
     /// </summary>
+    /// <param name="xpath">The XPath expression used to locate the element to be clicked. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous click operation.</returns>
+    /// <exception cref="BrowserElementNotFoundException">Thrown if the element cannot be found or clicked within the configured timeout period.</exception>
     protected async Task ClickAsync(string xpath)
     {
         Check_page_exists();
@@ -59,8 +63,13 @@ public class BaseBot(BrowserSettings settings) : IBaseBot
     }
     
     /// <summary>
-    /// Fill text input 
+    /// Attempts to input the specified text into the element identified by the given XPath expression, retrying if
+    /// necessary until the input is successful or a timeout occurs.
     /// </summary>
+    /// <param name="xpath">The XPath expression used to locate the target element on the page. Cannot be null or empty.</param>
+    /// <param name="text">The text to input into the located element. If null or empty, the input field will be cleared.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <exception cref="BrowserElementNotFoundException">Thrown if the element cannot be found, is not interactable, or the text cannot be input after multiple attempts.</exception>
     protected async Task InputTextAsync(string xpath, string text)
     {
         Check_page_exists();
@@ -94,6 +103,14 @@ public class BaseBot(BrowserSettings settings) : IBaseBot
         }
     }
 
+    /// <summary>
+    /// Asynchronously retrieves the text content of the first element that matches the specified XPath expression.
+    /// </summary>
+    /// <param name="xpath">The XPath expression used to locate the element whose text content is to be retrieved. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the text content of the matched
+    /// element.</returns>
+    /// <exception cref="BrowserElementNotFoundException">Thrown if the element is found but its text content is null or empty.</exception>
+    /// <exception cref="BrowserElementNoContentException">Thrown if the operation times out while waiting for the element or its content to become available.</exception>
     protected async Task<string> GetElementTextAsync(string xpath)
     {
         Check_page_exists();
@@ -121,9 +138,11 @@ public class BaseBot(BrowserSettings settings) : IBaseBot
         }
     }
     
+
     /// <summary>
-    /// Throw null reference exception if page not set!
+    /// Checks whether the Page property is set and throws an exception if it is null.
     /// </summary>
+    /// <exception cref="NullReferenceException">Thrown if the Page property is null.</exception>
     private void Check_page_exists()
     {
         if (Page == null)
