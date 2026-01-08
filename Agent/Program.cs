@@ -1,4 +1,5 @@
 ﻿using Agent;
+using Application.DataServices.Interfaces;
 using Application.Pipelines;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,5 +22,13 @@ await startup.InitializeInfrastructure(provider);
 var loginPipeline = provider.GetRequiredService<LoginPipeline>();
 var collectorPipeline = provider.GetRequiredService<CollectShiftDataPipeline>();
 
-// await loginPipeline.RunLoginSession();
-await collectorPipeline.RunPipelineAsync();
+var noshiftService = provider.GetRequiredService<IShiftNoRemarkDataService>();
+
+await loginPipeline.RunLoginSession();
+// await collectorPipeline.RunPipelineAsync();
+
+/*
+await noshiftService.LoadData();
+Console.WriteLine($"No Remark Shifts Count: {noshiftService.Data.Count}");
+Console.WriteLine($"No Remark Dates Count: {noshiftService.AllDates.Count}");
+*/

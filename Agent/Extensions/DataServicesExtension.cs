@@ -19,6 +19,7 @@ public static class DataServicesExtension
         services.AddScoped<IBaseDataService<Employee>, EmployeeDataService>();
         services.AddScoped<IBaseDataService<ShiftCode>, ShiftCodeDataService>();
         services.AddScoped<IBaseDataService<Shift>, ShiftDataService>();
+        services.AddScoped<IShiftNoRemarkDataService, ShiftNoRemarkDataService>();
         services.AddScoped<IBaseDataService<ShiftRemark>, ShiftRemarkDataService>();
         services.AddScoped<IBaseDataService<Workday>, WorkdayDataService>();
 

@@ -14,6 +14,7 @@ public static class DbServicesExtension
     {
         services.AddScoped<IBaseDbService<Employee>, EmployeeDbService>();
         services.AddScoped<IBaseDbService<ShiftCode>, ShiftCodeDbService>();
+        services.AddScoped<IShiftNoRemarkDbService, ShiftNoRemarkDbService>();
         services.AddScoped<IBaseDbService<ShiftRemark>, ShiftRemarkDbService>();
         services.AddScoped<IBaseDbService<Workday>, WorkdayDbService>();
         services.AddScoped<IBaseDbService<Shift>, ShiftDbService>();

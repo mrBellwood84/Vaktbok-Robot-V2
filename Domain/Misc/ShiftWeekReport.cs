@@ -30,7 +30,4 @@ public struct ShiftWeekReport
         NewShifts = 0;
         UpdatedShifts = 0;
     }
-    
-    
 }   
-

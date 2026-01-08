@@ -1,21 +1,20 @@
 ﻿using Domain.Entities;
 using Domain.Settings;
 
-namespace Persistence.DbServices.Services
+namespace Persistence.DbServices.Services;
+
+public class ShiftRemarkDbService : BaseDbService<ShiftRemark>
 {
-    public class ShiftRemarkDbService : BaseDbService<ShiftRemark>
+    public ShiftRemarkDbService(ConnectionStrings connectionStrings) 
+        : base(connectionStrings)
     {
-        public ShiftRemarkDbService(ConnectionStrings connectionStrings) 
-            : base(connectionStrings)
-        {
-            QueryAll = "SELECT * FROM ShiftRemark;";
-            QueryById = @"
+        QueryAll = "SELECT * FROM ShiftRemark;";
+        QueryById = @"
                 SELECT * FROM ShiftRemark
                 WHERE Id = @Id;";
 
-            Insert = @"
+        Insert = @"
                 INSERT INTO ShiftRemark (Id, Remark)
                 VALUES (@Id, @Remark);";
-        }
     }
 }
