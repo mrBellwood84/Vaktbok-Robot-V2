@@ -49,13 +49,15 @@ public class CollectShiftDataPipeline(
 
             // collect weekly data
             await CollectWeeklyData();
+            PrintFullWeeklyReport();
 
             // get remark data for missing remarks
             await ResolveRemarks();
 
-            PrintFullWeeklyReport();
-            Console.WriteLine("DEV :: End of code this far ");
-            Console.ReadLine();
+            Console.WriteLine();
+            AppLogger.LogSuccess("Pipeline complete! Press any key to exit...");
+            Console.WriteLine();
+            Console.ReadKey();
         }
         finally
         {
@@ -129,28 +131,36 @@ public class CollectShiftDataPipeline(
 
     private async Task ResolveRemarks()
     {
+        Console.WriteLine();
         AppLogger.LogInfo("Starting remark resolution...");
         AppLogger.LogAdd("Loading data with missing remarks");
         await noRemarkDataService.LoadData();
         AppLogger.LogAdd("Navigate to page");
         await shiftBookDailyBot.GotoShiftDaily();
-        AppLogger.LogSuccess("Starting remark collection loop");
+        AppLogger.LogAdd("Starting remark collection loop");
 
         int index = 1;
         int lenght = noRemarkDataService.AllDates.Count;
 
         foreach (var date in noRemarkDataService.AllDates)
         {
-            AppLogger.LogInfo($"Processing {index++} of {lenght} - Date: {date.ToShortDateString()}");
 
             // goto selected date and collect remark data
             await shiftBookDailyBot.NavigateToDate(date);
             var remarkData = await shiftBookDailyBot.GetTableData();
 
             // get shift data with no remark for the current date
+            var shifts = noRemarkDataService.GetShiftsByDate(date);
+
             // iterate shifts with no remark. Get remark from collected data. If no remkark found on name set remark to blank
-            // check if remark exists in database, and get guid. Else create new remark and get guid
-            // update shift remark in database!!!
+            foreach (var s in shifts)
+            {
+                var remark = remarkData.TryGetValue(s.Name, out string value) ? value : "";
+                var guid = await noRemarkDataService.GetRemarkGuid(remark);
+                await noRemarkDataService.UpdateShiftRemarks(s.Id, guid);
+            }
+
+            AppLogger.LogSuccess($"Completed {index++} of {lenght} - Date: {date.ToShortDateString()}");
         }
     }
 
