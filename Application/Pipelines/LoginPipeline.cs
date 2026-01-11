@@ -20,6 +20,7 @@ public class LoginPipeline(IBrowserHost browserHost, ILoginBot loginBot)
             Console.Clear();
             AppLogger.LogSuccess("Login successful!");
             AppLogger.LogInfo("You are now logged in. Press any key to close brower!");
+            Console.ReadKey();
         }
         finally
         {

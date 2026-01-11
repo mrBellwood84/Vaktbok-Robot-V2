@@ -1,4 +1,5 @@
-﻿using Domain.Settings;
+﻿using Common.Logging;
+using Domain.Settings;
 using Domain.SourceModels;
 using Microsoft.Playwright;
 using WebHarvester.Harvest.Exceptions;
@@ -169,8 +170,18 @@ public class ShiftBookWeeksBot(
     {
         // set current week number and year from page
         var rawYearWeekContent = await Page.Locator(WeekInfoContainerXPath).TextContentAsync();
+
         var splitContent = rawYearWeekContent!.Split(',');
         var weekContent = int.Parse(splitContent[0].Split(' ').Last().Trim());
+
+        if (splitContent[1].Contains("-"))
+        {
+            var secondSplit = splitContent[1].Split("-");
+            if (secondSplit[0].Trim().Length > 4) splitContent[1] = secondSplit[0].Trim();
+            else splitContent[1] = secondSplit[1].Trim();
+        }
+
+
         var yearContent = int.Parse(splitContent[1].Split(' ').Last().Trim());
 
         CurrentWeekNumber = weekContent;
