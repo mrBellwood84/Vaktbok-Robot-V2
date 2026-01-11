@@ -12,7 +12,7 @@ TO 'robot_user'@'localhost';
 -- Readonly user --
 CREATE USER IF NOT EXISTS 'reader_user'@'localhost' 
 IDENTIFIED BY 'reader_user_password';
-GRANT SELECT, EXECUTE ON Vaktbok_2.* 
+GRANT EXECUTE ON Vaktbok_2.* 
 TO 'reader_user'@'localhost';
 
 FLUSH PRIVILEGES;
