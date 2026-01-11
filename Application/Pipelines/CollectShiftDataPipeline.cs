@@ -26,10 +26,11 @@ public class CollectShiftDataPipeline(
     public async Task RunPipelineAsync()
     {
         Console.Clear();
+        AppLogger.LogInfo("Starting Shift Data Collection Pipeline...\n");
         try
         {
             // initialize browserhost and add page item to bots 
-            await browserHost.StartBrowserSession();
+            await browserHost.StartBrowserSessionAsync();
             loginBot.Page = browserHost.Page;
             shiftBookWeeksBot.Page = browserHost.Page;
             shiftBookDailyBot.Page = browserHost.Page;
@@ -129,6 +130,14 @@ public class CollectShiftDataPipeline(
         }
     }
 
+    /// <summary>
+    /// Resolves and updates missing remarks for shift data by collecting and applying remark information for each
+    /// relevant date.
+    /// </summary>
+    /// <remarks>This method loads shift data entries that are missing remarks, navigates through each
+    /// relevant date, collects remark information, and updates the corresponding shift records. The operation logs
+    /// progress and status information throughout the process. This method is intended to be called as part of a batch
+    /// remark resolution workflow.</remarks>
     private async Task ResolveRemarks()
     {
         Console.WriteLine();

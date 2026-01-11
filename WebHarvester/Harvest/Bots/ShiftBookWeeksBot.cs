@@ -27,6 +27,8 @@ public class ShiftBookWeeksBot(
     private const string CalendarWeekNumbersXPath = "(//table[@class=\"week-table\"])[1]//td[@class=\"week-number\"]";
     private const string CalendarYearContainerXPath = "(//li[@class=\"current-month caption no-select\"])[1]//span";
 
+    private const string PrintPageButtonXPath = "//div[@data-bind=\"click: PrintLogic()\"]";
+
     // current week number and year
     public int CurrentWeekNumber { get; set; } = 0;
     private int currentYear = 0;
@@ -86,7 +88,7 @@ public class ShiftBookWeeksBot(
     /// <summary>
     /// Click to next week in shift book weekly view
     /// </summary>
-    public async Task ClickNextWeek() 
+    public async Task ClickNextWeek()
     {
         // get first date header cell before click
         var prevCell = await (await Page.Locator(HeaderRowXPath).AllAsync())[1].TextContentAsync();
@@ -105,6 +107,18 @@ public class ShiftBookWeeksBot(
     }
 
     /// <summary>
+    /// Initiates a click action on the Print Page button asynchronously.
+    /// </summary>
+    public async Task ClickPrintPageButton()
+    {
+        // set current week and year before print
+        // !! IMPORTANT !! => while loop in pipeline depends on this to determine endpoint
+        // also used in naming of pdf files
+        await SetCurrentWeekAndYear();
+        await ClickAsync(PrintPageButtonXPath);
+    }
+
+    /// <summary>
     /// Determines whether the calendar endpoint has been reached based on the current year and week information
     /// extracted from the page.
     /// </summary>
@@ -116,7 +130,7 @@ public class ShiftBookWeeksBot(
     public async Task<bool> CheckEndpointReached()
     {
         if (currentYear > calendarSettings.YearEnd) return true;
-        if (currentYear == calendarSettings.YearEnd 
+        if (currentYear == calendarSettings.YearEnd
             && CurrentWeekNumber >= calendarSettings.WeekNumberEnd) return true;
         return false;
     }
@@ -219,7 +233,7 @@ public class ShiftBookWeeksBot(
         {
             var rawTextContent = await headerRows[i].TextContentAsync();
             var splitText = rawTextContent.ToLower().Split(' ');
-            
+
             if (splitText[0] == "navn") continue;
 
             var dateSplit = splitText[1].Split('.');

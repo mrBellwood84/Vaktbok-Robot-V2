@@ -1,16 +1,17 @@
 ﻿using Domain.SourceModels;
-using Microsoft.Playwright;
 
-namespace WebHarvester.Harvest.Interfaces;
-
-public interface IShiftBookWeeksBot
+namespace WebHarvester.Harvest.Interfaces
 {
-    IPage Page { get; set; }
-    int CurrentWeekNumber { get; set; }
-    Task<bool> CheckEndpointReached();
-    Task ClickNextWeek();
-    Task ClickOrderTableByName();
-    Task<List<SourceEmployeeWeek>> CollectWeekData();
-    Task GotoShiftBookWeeks();
-    Task NavigateToStartPoint();
+    public interface IShiftBookWeeksBot : IBaseBot
+    {
+        int CurrentWeekNumber { get; set; }
+
+        Task<bool> CheckEndpointReached();
+        Task ClickNextWeek();
+        Task ClickOrderTableByName();
+        Task ClickPrintPageButton();
+        Task<List<SourceEmployeeWeek>> CollectWeekData();
+        Task GotoShiftBookWeeks();
+        Task NavigateToStartPoint();
+    }
 }

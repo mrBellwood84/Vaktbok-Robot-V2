@@ -9,7 +9,7 @@ public interface IBrowserHost
     /// <summary>
     /// Start a new browser session. This will create a new browser, context and page!
     /// </summary>
-    Task StartBrowserSession();
+    Task StartBrowserSessionAsync();
 
     /// <summary>
     /// Close browser and set all fields to null!

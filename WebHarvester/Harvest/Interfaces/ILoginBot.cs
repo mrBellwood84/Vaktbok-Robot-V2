@@ -1,9 +1,7 @@
-﻿using Microsoft.Playwright;
-
-namespace WebHarvester.Harvest.Interfaces;
-
-public interface ILoginBot
+﻿namespace WebHarvester.Harvest.Interfaces
 {
-    IPage Page { get; set; }
-    Task RunLoginProcedureAsync();
+    public interface ILoginBot : IBaseBot
+    {
+        Task RunLoginProcedureAsync();
+    }
 }

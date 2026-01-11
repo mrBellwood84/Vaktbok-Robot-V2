@@ -21,11 +21,13 @@ await startup.InitializeInfrastructure(provider);
 
 var loginPipeline = provider.GetRequiredService<LoginPipeline>();
 var collectorPipeline = provider.GetRequiredService<CollectShiftDataPipeline>();
+var pdfPipeline = provider.GetRequiredService<WeekyPdfPrintPipeline>();
 
 var noshiftService = provider.GetRequiredService<IShiftNoRemarkDataService>();
 
 // await loginPipeline.RunLoginSession();
-await collectorPipeline.RunPipelineAsync();
+// await collectorPipeline.RunPipelineAsync();
+await pdfPipeline.RunPipeLineAsync();
 
 /*
 await noshiftService.LoadData();

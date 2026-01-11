@@ -1,11 +1,7 @@
-﻿using Microsoft.Playwright;
-
-namespace WebHarvester.Harvest.Interfaces
+﻿namespace WebHarvester.Harvest.Interfaces
 {
-    public interface IShiftBookDailyBot
+    public interface IShiftBookDailyBot : IBaseBot
     {
-        IPage Page { get; set; }
-
         Task<Dictionary<string, string>> GetTableData();
         Task GotoShiftDaily();
         Task NavigateToDate(DateTime date);

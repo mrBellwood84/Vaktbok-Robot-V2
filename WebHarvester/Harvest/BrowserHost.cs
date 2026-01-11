@@ -21,11 +21,11 @@ public class BrowserHost(BrowserSettings settings) : IBrowserHost
     /// <summary>
     /// Start a new browser session. This will create a new browser, context and page!
     /// </summary>
-    public async Task StartBrowserSession()
+    public async Task StartBrowserSessionAsync()
     {
         await CreateBrowserAsync();
-        await CreateContext();
-        await CreatePage();
+        await CreateContextAsync();
+        await CreatePageAsync();
     }
     
     /// <summary>
@@ -79,7 +79,7 @@ public class BrowserHost(BrowserSettings settings) : IBrowserHost
     /// <summary>
     /// Create browser context based on existing browser
     /// </summary>
-    private async Task CreateContext()
+    private async Task CreateContextAsync()
     {
         var contextOpts = new BrowserNewContextOptions
         {
@@ -97,7 +97,7 @@ public class BrowserHost(BrowserSettings settings) : IBrowserHost
     /// <summary>
     /// Create page within created browser and context
     /// </summary>
-    private async Task CreatePage()
+    private async Task CreatePageAsync()
     {
         _page = await _context!.NewPageAsync();
         await _page.SetExtraHTTPHeadersAsync(new Dictionary<string, string>

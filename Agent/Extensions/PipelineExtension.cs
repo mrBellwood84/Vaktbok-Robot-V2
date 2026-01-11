@@ -12,6 +12,7 @@ public static class PipelineExtension
     {
         services.AddSingleton<LoginPipeline>();
         services.AddSingleton<CollectShiftDataPipeline>();
+        services.AddSingleton<WeekyPdfPrintPipeline>();
 
         return services;
     }
