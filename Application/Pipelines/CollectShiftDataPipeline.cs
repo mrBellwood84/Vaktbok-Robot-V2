@@ -1,6 +1,7 @@
 ﻿using Application.DataServices.Interfaces;
 using Common.Logging;
 using Common.PdfWriter;
+using Common.Progress;
 using Domain.Entities;
 using Domain.Misc;
 using Domain.Settings;
@@ -23,6 +24,14 @@ public class CollectShiftDataPipeline(
 {
     private ShiftWeekReport _report =  new();
     
+    /// <summary>
+    /// Runs the complete shift data collection pipeline asynchronously, including login, data retrieval, and reporting
+    /// steps.
+    /// </summary>
+    /// <remarks>This method manages the full workflow for collecting and reporting shift data. It initializes
+    /// the browser session, performs authentication, navigates to the required starting point, collects weekly data,
+    /// resolves missing remarks, and generates a report. The browser session is closed automatically when the pipeline
+    /// completes or if an error occurs. User interaction is required at certain steps to proceed.</remarks>
     public async Task RunPipelineAsync()
     {
         Console.Clear();
@@ -151,8 +160,11 @@ public class CollectShiftDataPipeline(
         int index = 1;
         int lenght = noRemarkDataService.AllDates.Count;
 
+        using var progressBar = ProgressBarFactory.CreateProgressBar("Resolving remarks", lenght);
+
         foreach (var date in noRemarkDataService.AllDates)
         {
+            progressBar.Message = $"Resolving {index++} of {lenght} - {date.ToShortDateString()}";
 
             // goto selected date and collect remark data
             await shiftBookDailyBot.NavigateToDate(date);
@@ -168,9 +180,10 @@ public class CollectShiftDataPipeline(
                 var guid = await noRemarkDataService.GetRemarkGuid(remark);
                 await noRemarkDataService.UpdateShiftRemarks(s.Id, guid);
             }
-
-            AppLogger.LogSuccess($"Completed {index++} of {lenght} - Date: {date.ToShortDateString()}");
+            progressBar.Tick();
         }
+        progressBar.Message = "Remark resolution complete!";
+        progressBar.Tick(lenght);
     }
 
     /// <summary>

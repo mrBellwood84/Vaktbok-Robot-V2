@@ -69,7 +69,7 @@ public static class PdfWriter
     {
         var week_n_string = week_n.PadLeft(2, '0');
         var now = DateTime.Now.ToString("yyyyMMdd");
-        var fileName = $"{now}_{week_n}.pdf";
+        var fileName = $"{now}_{week_n_string}.pdf";
         var fileDir = Path.Join(reportFolder, "Faksimile", week_n_string);
         var filePath = Path.Join(fileDir, fileName);
         
