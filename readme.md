@@ -1,35 +1,101 @@
 # Vaktbok Robot V2
 
-Vaktbok Robot V2 er et verktøy laget for å overvåke vaktlister fra MinGat/Visma, med fokus på å oppdage endringer som ellers ikke er synlige for standard brukerkontoer i systemet.
+Vaktbok Robot V2 er en konsollbasert .NET-applikasjon for automatisert innhenting, sammenligning og dokumentasjon av vaktplaner fra webbaserte systemer.
 
-Denne scraperen roboten er designet opp mot de interne nettsidene i Helse Bergen.
+Applikasjonen er utviklet for praktisk bruk og kombinerer:
+- UI-automatisering
+- Databaselagring av endringer
+- Manuell dokumentasjon via PDF-utskrift
+
+---
+
+## Funksjonalitet
+
+Applikasjonen tilbyr tre hovedfunksjoner:
+
+### 1. Login session
+Starter en innlogget sesjon mot relevante systemer og klargjør applikasjonen for videre bruk.  
+Denne brukes både for manuell kjøring og som forberedelse til automatiserte operasjoner.
+
+### 2. Automatisert kontroll av vaktplaner
+Applikasjonen kan kjøre automatisk gjennom alle uker i en angitt tidsperiode, lese vaktplaner og sammenligne disse med tidligere registrerte data.
+
+Eventuelle endringer lagres i database.  
+Tidsperioden for denne kjøringen konfigureres i `appsettings.json`.
+
+### 3. Lagring av vaktplaner som PDF
+Vaktplaner kan lagres som PDF ved hjelp av nettleserens innebygde print-funksjon.
+
+Denne funksjonen er **halvautomatisk**:
+- Applikasjonen blar automatisk mellom uker
+- Brukeren lagrer PDF manuelt via print-dialogen
+
+Dette er en bevisst designbeslutning, da nettleserens print-dialog ikke kan styres stabilt fra Playwright på tvers av operativsystemer.
 
 ---
 
-## Hovedfunksjoner
+## Installasjon
 
-1. **Login**
-    - Logger inn på MinGat og opprettholder en aktiv browser-session.
-    - Gir andre bots tilgang til samme session uten å måtte logge inn flere ganger.
+### Forutsetninger
 
-2. **Scraper**
-    - Henter data fra vaktlistene og identifiserer endringer fra tidligere innhentet data.
-    - Kan brukes til å holde oversikt over vaktplaner og dokumentere eventuelle justeringer.
+- .NET SDK
+- MySQL-server
+- Tilgang til relevante interne systemer
+- Nettleser støttet av Playwright
 
 ---
-## `appsettings.secret.json`
 
-Vaktbok Robot V2 krever en **hemmelig settings-fil** som inneholder sensitive opplysninger som brukernavn og passord.
-Connection strings og filbaner for dokumentlagring er også inkludert her. 
+### 1. Klon repoet
 
-- `IHelseUser`, `IHelsePassword`: for innlogging til intranettet.
-- `GatUser`, `GatPasword`:for innlogging til Gat
-- `Urls.Entry`: Startside for robot.
-- `Urls.LoginSleep`: Venteside for tofaktor autentifisering.
+```bash
+git clone <repo-url>
+```
+
+---
+
+### 2. Installer Playwright
+
+Playwright **må installeres manuelt** før applikasjonen kan kjøres.
+
+#### Windows
+```powershell
+./install-playwright.ps1
+```
+
+#### Linux
+```bash
+./install-playwright.sh
+```
+
+---
+
+### 3. Databaseoppsett
+
+Databasen settes opp ved hjelp av SQL-skript og DbUp.
+
+#### Manuell initiering
+
+Kjør følgende skript manuelt:
+
+- `0001_CreateDatabase.sql`
+
+Dette skriptet:
+- Oppretter databasen
+- Oppretter nødvendige brukere
+- Setter riktige rettigheter
+
+Det forutsettes at en eksisterende **root-bruker allerede finnes** i MySQL.
+
+---
+
+### 4. Konfigurasjon
+
+#### `appsettings.secret.json`
+
 ```json
 {
-  "Credentials" : {
-    "IHelseUser": "", 
+  "Credentials": {
+    "IHelseUser": "",
     "IHelsePassword": "",
     "GatUser": "",
     "GatPassword": ""
@@ -37,8 +103,8 @@ Connection strings og filbaner for dokumentlagring er også inkludert her.
   "Urls": {
     "Entry": "",
     "LoginSleep": ""
-  }
-    "ConnectionStrings": {
+  },
+  "ConnectionStrings": {
     "Root": "Server=localhost;Database=Vaktbok_2;Uid=root;Pwd=root;",
     "Robot": "Server=localhost;Database=Vaktbok_2;Uid=robot_user;Pwd=robot_user_password;"
   },
@@ -46,3 +112,16 @@ Connection strings og filbaner for dokumentlagring er også inkludert her.
     "DocumentDirectory": "path/to/documents"
   }
 }
+```
+
+---
+
+## Dokumentstruktur
+
+### faksimile
+- Lagres per ukenummer
+
+### pdfprint
+- Lagres per utskriftsdato
+
+---

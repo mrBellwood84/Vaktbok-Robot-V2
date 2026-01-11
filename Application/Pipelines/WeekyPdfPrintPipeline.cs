@@ -100,8 +100,9 @@ public class WeekyPdfPrintPipeline(
     /// <param name="week_n">The week number to include in the generated file name. Must be a non-negative integer.</param>
     private void CreateFileName(int week_n)
     {
+        var week_n_string = week_n.ToString().PadLeft(2, '0');
         var now = DateTime.Now.ToString("yyyyMMdd");
-        var name= $"{now}_{week_n}";
+        var name= $"{now}_{week_n_string}";
         AppLogger.LogInfo($"Generated file name: {name}");
     }
     
