@@ -1,4 +1,4 @@
-Use Vaktbok_2;
+Use Vaktbok;
 
 DELIMITER //
 

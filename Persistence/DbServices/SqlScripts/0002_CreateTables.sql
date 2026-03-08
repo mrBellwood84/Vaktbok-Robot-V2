@@ -1,4 +1,4 @@
-USE Vaktbok_2;
+USE Vaktbok;
 
 CREATE TABLE IF NOT EXISTS Employee(
 	Id VARCHAR(36) PRIMARY KEY,

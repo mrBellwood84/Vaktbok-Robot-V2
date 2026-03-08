@@ -43,7 +43,7 @@ Dette er en bevisst designbeslutning, da nettleserens print-dialog ikke kan styr
 - Tilgang til relevante interne systemer
 - Nettleser støttet av Playwright
 
----
+--
 
 ### 1. Klon repoet
 
@@ -57,16 +57,11 @@ git clone <repo-url>
 
 Playwright **må installeres manuelt** før applikasjonen kan kjøres.
 
-#### Windows
-```powershell
-./install-playwright.ps1
+Her var det script, men de ble fjernet da de ikke virket etter hensikten.
+Kjør heller følgende kommando etter å ha bygd løsningen.
 ```
-
-#### Linux
-```bash
-./install-playwright.sh
+> playwright install
 ```
-
 ---
 
 ### 3. Databaseoppsett
@@ -105,8 +100,8 @@ Det forutsettes at en eksisterende **root-bruker allerede finnes** i MySQL.
     "LoginSleep": ""
   },
   "ConnectionStrings": {
-    "Root": "Server=localhost;Database=Vaktbok_2;Uid=root;Pwd=root;",
-    "Robot": "Server=localhost;Database=Vaktbok_2;Uid=robot_user;Pwd=robot_user_password;"
+    "Root": "Server=localhost;Database=Vaktbok;Uid=root;Pwd=root;",
+    "Robot": "Server=localhost;Database=Vaktbok;Uid=robot_user;Pwd=robot_user_password;"
   },
   "FileSettings": {
     "DocumentDirectory": "path/to/documents"
